@@ -19,7 +19,6 @@ app.use(cors());
 // middleware to parse into json
 app.use(express.json());
 
-
 app.use("/health", (req, res) => {
   res
     .status(200)
@@ -27,8 +26,7 @@ app.use("/health", (req, res) => {
 });
 
 // Routes
-
-
+app.use("/api/auth", require("./routes/authRoute"));
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {

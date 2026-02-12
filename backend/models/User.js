@@ -3,20 +3,54 @@ const bcrypt = require("bcryptjs");
 
 const { Schema } = mongoose;
 
-const UserSchema = new Schema({
-  name: {
-    type: String,
-    require: true,
+const UserSchema = new Schema(
+  {
+    name: {
+      type: String,
+      require: true,
+    },
+
+    email: {
+      type: String,
+      require: true,
+    },
+
+    password: {
+      type: String,
+      require: true,
+    },
+
+    profileimage: {
+      type: String,
+      default: "https://cdn-icons-png.flaticon.com/128/12225/12225935.png",
+    },
+
+    coverImage: {
+      type: String,
+      default: "https://cdn-icons-png.flaticon.com/128/4131/4131708.png",
+    },
+
+    boidata: {
+      type: String,
+    },
+
+    followers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+
+    following: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
   },
-  email: {
-    type: String,
-    require: true,
-  },
-  password: {
-    type: String,
-    require: true,
-  },
-});
+
+  { timestamps: true },
+);
 
 UserSchema.pre("save", async function () {
   // Only hash if password is modified

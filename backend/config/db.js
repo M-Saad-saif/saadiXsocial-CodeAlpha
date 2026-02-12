@@ -5,6 +5,8 @@ const ConnectDB = async () => {
     process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/saadixsocials";
   try {
     await mongoose.connect(mongooDB_URI);
+
+    // checking if the mongoo is in atlas or local
     const host = mongoose.connection.host;
     if (host.includes("mongodb.net")) {
       console.log("connect to mongoDB (Atlas)");
@@ -17,4 +19,4 @@ const ConnectDB = async () => {
   }
 };
 
-module.exports = ConnectDB
+module.exports = ConnectDB;
