@@ -1,11 +1,34 @@
 const express = require("express");
+const cors = require("cors");
+const ConnectDB = require("./config/db");
+const path = require("path");
+require("dotenv").config({ path: path.join(__dirname, ".env") });
+
 const app = express();
+ConnectDB();
+
+// app.use(
+//   cors({
+//     origin: "*",
+//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+//     allowedHeaders: ["Content-Type", "auth-token"],
+//   }),
+// );
+
+app.use(cors());
+// middleware to parse into json
+app.use(express.json());
+
 
 app.use("/health", (req, res) => {
   res
     .status(200)
     .json({ success: true, message: "backend is running successfully" });
 });
+
+// Routes
+
+
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
