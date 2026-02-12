@@ -20,7 +20,7 @@ const UserSchema = new Schema(
       require: true,
     },
 
-    profileimage: {
+    profileImage: {
       type: String,
       default: "https://cdn-icons-png.flaticon.com/128/12225/12225935.png",
     },
