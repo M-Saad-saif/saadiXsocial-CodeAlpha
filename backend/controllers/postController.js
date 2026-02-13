@@ -1,4 +1,5 @@
 const PostModel = require("../models/Post");
+const UserModel = require("../models/User.js");
 
 // desc    create post
 // route   POST /api/post/createpost
@@ -88,9 +89,26 @@ const likePost = async (req, res) => {
   }
 };
 
+// desc    streamline post
+// route   PUT /api/post/feed
+// access  Private
+const getFeed = async (req, res) => {
+  const user = await UserModel.findById(req.user.id);
+
+  const posts = await PostModel.find({
+    user: { $in: [...user.following, req.user.id] },
+  })
+    .populate("user", "name")
+    .sort({ createdAt: -1 });
+
+  res.json(posts);
+};
+
+
 module.exports = {
   createPost,
   getPost,
   deletePost,
   likePost,
+  getFeed,
 };

@@ -1,0 +1,42 @@
+/* ========================================
+   LAYOUT STRUCTURE
+   ======================================== */
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.layout-body {
+  display: flex;
+  flex: 1;
+  max-width: 1600px;
+  margin: 0 auto;
+  width: 100%;
+  padding-top: 70px; /* Account for fixed navbar */
+}
+
+.layout-main {
+  flex: 1;
+  padding: var(--spacing-xl);
+  min-width: 0; /* Prevent flex overflow */
+  animation: fadeIn 0.4s ease;
+}
+
+/* Responsive Layout */
+@media (max-width: 1024px) {
+  .layout-body {
+    flex-direction: column;
+  }
+
+  .layout-main {
+    padding: var(--spacing-lg);
+  }
+}
+
+@media (max-width: 768px) {
+  .layout-main {
+    padding: var(--spacing-md);
+  }
+}
