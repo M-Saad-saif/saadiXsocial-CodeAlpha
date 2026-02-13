@@ -26,6 +26,31 @@ const getuser = async (req, res) => {
   }
 };
 
+// desc    get user by id (for viewing other users' profiles)
+// route   GET /api/user/:id
+// access  Private
+const getUserById = async (req, res) => {
+  try {
+    const user = await UserModel.findById(req.params.id).select("-password");
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      data: user,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 // desc    Update user profile & change password
 // route   PUT /api/user/updateprofile
 // access  Private
@@ -170,10 +195,46 @@ const unfollowUser = async (req, res) => {
   }
 };
 
+// desc    Search users by name or email
+// route   GET /api/user/search?q=searchQuery
+// access  Private
+const searchUsers = async (req, res) => {
+  try {
+    const { q } = req.query;
+
+    if (!q || q.trim().length < 2) {
+      return res.status(400).json({
+        success: false,
+        message: 'Search query must be at least 2 characters',
+      });
+    }
+
+    // Search users by name or email (case-insensitive)
+    const users = await UserModel.find({
+      $or: [
+        { name: { $regex: q, $options: 'i' } },
+        { email: { $regex: q, $options: 'i' } },
+      ],
+    })
+      .select('-password')
+      .limit(10); 
+
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+
 module.exports = {
   getuser,
+  getUserById,
   updateProfile,
   deleteUser,
   followUser,
   unfollowUser,
+  searchUsers, 
 };

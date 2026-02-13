@@ -15,6 +15,16 @@ export const getCurrentUser = async () => {
   }
 };
 
+// Get user profile by ID (for viewing other users' profiles)
+export const getUserById = async (userId) => {
+  try {
+    const response = await api.get(`/api/user/${userId}`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: 'Failed to fetch user profile' };
+  }
+};
+
 // Update user profile
 export const updateUserProfile = async (profileData) => {
   try {
@@ -52,5 +62,15 @@ export const unfollowUser = async (userId) => {
     return response.data;
   } catch (error) {
     throw error.response?.data || { message: 'Failed to unfollow user' };
+  }
+};
+
+// Search users by name or email
+export const searchUsers = async (query) => {
+  try {
+    const response = await api.get(`/api/user/search?q=${encodeURIComponent(query)}`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: 'Failed to search users' };
   }
 };

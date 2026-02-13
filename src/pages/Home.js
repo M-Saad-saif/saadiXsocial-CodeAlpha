@@ -3,6 +3,7 @@ import { useFeed } from '../context/FeedContext';
 import { useAuth } from '../context/AuthContext';
 import PostCard from '../components/PostCard';
 import PostSkeleton from '../components/PostSkeleton';
+import SearchUsers from '../components/SearchUsers';
 import { useInView } from 'react-intersection-observer';
 import '../styles/Home.css';
 
@@ -18,7 +19,6 @@ const Home = () => {
   // Initial feed fetch
   useEffect(() => {
     fetchFeed(true);
-    // eslint-disable-next-line 
   }, []);
 
   // Load more posts when scrolling to bottom
@@ -26,7 +26,6 @@ const Home = () => {
     if (inView && hasMore && !loading) {
       fetchFeed();
     }
-    // eslint-disable-next-line 
   }, [inView, hasMore, loading]);
 
   // Handle refresh
@@ -54,6 +53,11 @@ const Home = () => {
           </svg>
           Refresh
         </button>
+      </div>
+
+      {/* Search Users Section */}
+      <div className="search-section">
+        <SearchUsers />
       </div>
 
       <div className="feed-container">

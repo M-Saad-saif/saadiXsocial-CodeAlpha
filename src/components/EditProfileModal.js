@@ -44,17 +44,21 @@ const EditProfileModal = ({ user, onClose, onUpdate }) => {
 
     if (!formData.name.trim()) {
       newErrors.name = 'Name is required';
+    } else if (formData.name.trim().length < 2) {
+      newErrors.name = 'Name must be at least 2 characters';
     }
 
     // If password change is attempted, validate both fields
     if (formData.oldPassword || formData.newPassword) {
       if (!formData.oldPassword) {
-        newErrors.oldPassword = 'Current password is required';
+        newErrors.oldPassword = 'Current password is required to change password';
       }
       if (!formData.newPassword) {
         newErrors.newPassword = 'New password is required';
       } else if (formData.newPassword.length < 6) {
         newErrors.newPassword = 'New password must be at least 6 characters';
+      } else if (formData.newPassword === formData.oldPassword) {
+        newErrors.newPassword = 'New password must be different from current password';
       }
     }
 

@@ -22,3 +22,12 @@ node_modules
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+
+
+# github copilot
+BUG_FIXES_SUMMARY.md
+CODE_CHANGES_DETAILED.md
+DATA_FLOW_DIAGRAM.md
+IMPLEMENTATION_GUIDE.md
+QUICK_REFERENCE.md

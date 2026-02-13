@@ -55,6 +55,11 @@
   animation: spin 1s linear infinite;
 }
 
+/* Search Section */
+.search-section {
+  margin-bottom: var(--spacing-xl);
+}
+
 /* Feed Container */
 .feed-container {
   display: flex;

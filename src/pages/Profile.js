@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { getCurrentUser, followUser, unfollowUser } from '../services/userService';
+import { getCurrentUser, getUserById, followUser, unfollowUser } from '../services/userService';
 import { toast } from 'react-toastify';
-import EditProfileModal from '../components/EditProfileModal';
+import AccountSettings from '../components/AccountSettings';
 import '../styles/Profile.css';
 
 /**
@@ -18,9 +18,13 @@ const Profile = () => {
   const [profileUser, setProfileUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isFollowing, setIsFollowing] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
 
-  const isOwnProfile = !userId || userId === currentUser?.id || userId === currentUser?._id;
+  // Determine if this is the current user's profile
+  // Compare both string and ObjectId representations
+  const isOwnProfile = !userId || 
+                       userId === currentUser?.id || 
+                       userId === currentUser?._id || 
+                       String(userId) === String(currentUser?._id);
 
   // Fetch profile data
   useEffect(() => {
@@ -33,16 +37,15 @@ const Profile = () => {
           const response = await getCurrentUser();
           setProfileUser(response.data);
           updateUser(response.data);
-        } else {
-          // In a real app, you'd have an endpoint to fetch other users' profiles
-          // For now, we'll show current user profile
-          const response = await getCurrentUser();
+        } else if (userId) {
+          // Fetch other user's profile by ID
+          const response = await getUserById(userId);
           setProfileUser(response.data);
-        }
-        
-        // Check if current user is following this profile
-        if (!isOwnProfile && currentUser?.following) {
-          setIsFollowing(currentUser.following.includes(userId));
+          
+          // Check if current user is following this profile
+          if (currentUser?.following) {
+            setIsFollowing(currentUser.following.includes(userId));
+          }
         }
       } catch (error) {
         toast.error('Failed to load profile');
@@ -53,7 +56,7 @@ const Profile = () => {
     };
 
     fetchProfile();
-  }, [userId, isOwnProfile, currentUser]);
+  }, [userId, isOwnProfile]); // Removed currentUser from dependencies to prevent unnecessary re-renders
 
   // Handle follow/unfollow
   const handleFollowToggle = async () => {
@@ -127,12 +130,10 @@ const Profile = () => {
 
             <div className="profile-actions">
               {isOwnProfile ? (
-                <button
-                  onClick={() => setShowEditModal(true)}
-                  className="edit-profile-button"
-                >
-                  Edit Profile
-                </button>
+                <AccountSettings 
+                  user={profileUser} 
+                  onProfileUpdate={handleProfileUpdate}
+                />
               ) : (
                 <button
                   onClick={handleFollowToggle}
@@ -171,15 +172,6 @@ const Profile = () => {
           </div>
         </div>
       </div>
-
-      {/* Edit Profile Modal */}
-      {showEditModal && (
-        <EditProfileModal
-          user={profileUser}
-          onClose={() => setShowEditModal(false)}
-          onUpdate={handleProfileUpdate}
-        />
-      )}
     </div>
   );
 };
