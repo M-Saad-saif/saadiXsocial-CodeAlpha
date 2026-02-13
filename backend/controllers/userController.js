@@ -82,7 +82,6 @@ const updateProfile = async (req, res) => {
 // desc    deleteuser and all relates
 // route   DELET /api/user/deleteuser
 // access  Private
-
 const deleteUser = async (req, res) => {
   try {
     const userId = req.user.id;
