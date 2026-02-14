@@ -1,9 +1,9 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { FiHome, FiPlusSquare, FiUser, FiLogOut, FiMenu } from 'react-icons/fi';
-import { useState } from 'react';
-import '../styles/Navbar.css';
-
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { FiHome, FiPlusSquare, FiUser, FiLogOut, FiMenu } from "react-icons/fi";
+import { useState } from "react";
+import "../styles/Navbar.css";
+import logo from "../Images/saadIXsocailicon.png";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -12,7 +12,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate("/");
   };
 
   const toggleMobileMenu = () => {
@@ -23,7 +23,7 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="navbar-container">
         <Link to="/feedinterface" className="navbar-logo">
-          <span className="logo-icon">◉</span>
+          <img src={logo} alt="" style={{ width: "37px" }} />
           <span className="logo-text">saadIXsocials</span>
         </Link>
 
@@ -45,7 +45,10 @@ const Navbar = () => {
         <div className="navbar-user">
           <div className="user-info">
             <img
-              src={user.profileImage || 'https://cdn-icons-png.flaticon.com/128/12225/12225935.png'}
+              src={
+                user.profileImage ||
+                "https://cdn-icons-png.flaticon.com/128/12225/12225935.png"
+              }
               alt={user.name}
               className="user-avatar"
             />
@@ -64,15 +67,27 @@ const Navbar = () => {
 
       {showMobileMenu && (
         <div className="mobile-menu">
-          <Link to="/feedinterface" className="mobile-link" onClick={toggleMobileMenu}>
+          <Link
+            to="/feedinterface"
+            className="mobile-link"
+            onClick={toggleMobileMenu}
+          >
             <FiHome />
             <span>Home</span>
           </Link>
-          <Link to="/create-post" className="mobile-link" onClick={toggleMobileMenu}>
+          <Link
+            to="/create-post"
+            className="mobile-link"
+            onClick={toggleMobileMenu}
+          >
             <FiPlusSquare />
             <span>Create</span>
           </Link>
-          <Link to={`/profile/${user?._id}`} className="mobile-link" onClick={toggleMobileMenu}>
+          <Link
+            to={`/profile/${user?._id}`}
+            className="mobile-link"
+            onClick={toggleMobileMenu}
+          >
             <FiUser />
             <span>Profile</span>
           </Link>
