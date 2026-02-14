@@ -8,6 +8,7 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   overflow: hidden;
+  position: relative;
   transition: all var(--transition-base);
   animation: slideUp 0.5s ease;
 }
@@ -125,6 +126,34 @@
 
 .menu-item.delete:hover {
   background: rgba(239, 68, 68, 0.1);
+}
+
+.profile-delete-button {
+  position: absolute;
+  top: var(--spacing-sm);
+  left: var(--spacing-sm);
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(17, 24, 39, 0.7);
+  color: #ffffff;
+  z-index: 12;
+  backdrop-filter: blur(4px);
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.profile-delete-button:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.9);
+  transform: scale(1.05);
+}
+
+.profile-delete-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
 }
 
 /* Post Image */

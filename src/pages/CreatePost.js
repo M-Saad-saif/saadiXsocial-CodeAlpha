@@ -87,7 +87,7 @@ const CreatePost = () => {
         addPost(response.post);
 
         toast.success(response.message || "Post created successfully!");
-        navigate("/");
+        navigate("/feedinterface");
       }
     } catch (error) {
       toast.error(error.message || "Failed to create post");
@@ -98,7 +98,7 @@ const CreatePost = () => {
 
   // Handle cancel
   const handleCancel = () => {
-    navigate("/");
+    navigate("/feedinterface");
   };
 
   return (

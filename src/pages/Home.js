@@ -1,102 +1,149 @@
-import { useEffect } from "react";
-import { useFeed } from "../context/FeedContext";
-import { useAuth } from "../context/AuthContext";
-import PostCard from "../components/PostCard";
-import PostSkeleton from "../components/PostSkeleton";
-import SearchUsers from "../components/SearchUsers";
-import { useInView } from "react-intersection-observer";
+import React from "react";
+import { Link } from "react-router-dom";
 import "../styles/Home.css";
 
 const Home = () => {
-  const { posts, loading, hasMore, fetchFeed, refreshFeed } = useFeed();
-  const { user } = useAuth();
-  const { ref, inView } = useInView();
-
-  useEffect(() => {
-    fetchFeed(true);
-    // eslint-disable-next-line
-  }, []);
-
-  useEffect(() => {
-    if (inView && hasMore && !loading) {
-      fetchFeed();
-    }
-    // eslint-disable-next-line
-  }, [inView, hasMore, loading]);
-
-  const handleRefresh = () => {
-    refreshFeed();
-  };
+  const features = [
+    {
+      icon: "🚀",
+      title: "Share Moments",
+      description:
+        "Create posts with images and descriptions. Connect with friends through your stories.",
+    },
+    {
+      icon: "❤️",
+      title: "Engage & Interact",
+      description:
+        "Like posts, follow friends, and build your community with real-time updates.",
+    },
+    {
+      icon: "👤",
+      title: "Expressive Profiles",
+      description:
+        "Customize with cover images, profile pictures, and your unique bio.",
+    },
+    {
+      icon: "🛡️",
+      title: "Private & Secure",
+      description:
+        "Your data is protected with JWT authentication. Only you control your content.",
+    },
+    {
+      icon: "📱",
+      title: "Fully Responsive",
+      description:
+        "A seamless experience on desktop, tablet, and mobile. Stay connected anywhere.",
+    },
+    {
+      icon: "⚡",
+      title: "Real-Time Feed",
+      description:
+        "See posts from people you follow with infinite scroll and instant updates.",
+    },
+  ];
 
   return (
-    <div className="home-container">
-      <div className="home-header">
-        <h1 className="home-title">Your Feed</h1>
-        <button
-          onClick={handleRefresh}
-          className="refresh-button"
-          disabled={loading}
-        >
-          <svg
-            className={`refresh-icon ${loading ? "spinning" : ""}`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-            />
-          </svg>
-          Refresh
-        </button>
-      </div>
+    <div className="landing-container">
+      <div className="landing-background"></div>
 
-      {/* Search Users Section */}
-      <div className="search-section">
-        <SearchUsers />
-      </div>
+      <div className="landing-hero">
+        <div className="hero-content">
+          <h1 className="hero-title">
+            <span className="hero-gradient">saadIXsocials</span>
+          </h1>
+          <p className="hero-subtitle">
+            Connect with family and friends. Share your world, securely.
+          </p>
 
-      <div className="feed-container">
-        {loading && posts.length === 0 ? (
-          // Initial loading state
-          <>
-            <PostSkeleton />
-            <PostSkeleton />
-            <PostSkeleton />
-          </>
-        ) : posts.length === 0 ? (
-          // Empty state
-          <div className="empty-feed">
-            <div className="empty-icon">📭</div>
-            <h2>No posts yet</h2>
-            <p>Follow users to see their posts in your feed</p>
+          <div className="hero-buttons">
+            <Link to="/register" className="btn-primary btn-large">
+              Create account <span className="btn-arrow">→</span>
+            </Link>
+            <Link to="/login" className="btn-secondary btn-large">
+              Log in
+            </Link>
           </div>
-        ) : (
-          // Posts
-          <>
-            {posts.map((post) => (
-              <PostCard key={post._id} post={post} currentUser={user} />
-            ))}
 
-            {/* Infinite scroll trigger */}
-            {hasMore && (
-              <div ref={ref} className="load-more-trigger">
-                {loading && <PostSkeleton />}
-              </div>
-            )}
+          <div className="hero-stats">
+            <div className="stat-item">
+              <span className="stat-number">12+</span>
+              <span className="stat-label">Features</span>
+            </div>
+            <div className="stat-item">
+              <span className="stat-number">100%</span>
+              <span className="stat-label">Your Data</span>
+            </div>
+            <div className="stat-item">
+              <span className="stat-number">24/7</span>
+              <span className="stat-label">Connection</span>
+            </div>
+          </div>
+        </div>
 
-            {/* End of feed message */}
-            {!hasMore && posts.length > 0 && (
-              <div className="end-of-feed">
-                <p>You're all caught up! 🎉</p>
-              </div>
-            )}
-          </>
-        )}
+        <div className="hero-visual">
+          <div className="visual-card card-1">
+            <div className="visual-header">
+              <span className="visual-avatar"></span>
+              <span className="visual-name">Alex</span>
+            </div>
+            <div className="visual-image"></div>
+            <div className="visual-actions">
+              <span className="visual-like">❤️</span>
+              <span className="visual-comment">💬</span>
+            </div>
+          </div>
+          <div className="visual-card card-2">
+            <div className="visual-header">
+              <span className="visual-avatar"></span>
+              <span className="visual-name">Sam</span>
+            </div>
+            <div className="visual-image"></div>
+            <div className="visual-actions">
+              <span className="visual-like">❤️</span>
+              <span className="visual-comment">💬</span>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <div className="features-section">
+        <h2 className="section-title">
+          Everything you need in a{" "}
+          <span className="gradient-text">social space</span>
+        </h2>
+        <div className="features-grid">
+          {features.map((feature, index) => (
+            <div key={index} className="feature-card">
+              <div className="feature-icon-large">{feature.icon}</div>
+              <h3 className="feature-title">{feature.title}</h3>
+              <p className="feature-description">{feature.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="cta-section">
+        <div className="cta-card">
+          <h2 className="cta-title">Ready to connect?</h2>
+          <p className="cta-text">
+            Join saadIXsocials today and start sharing your journey.
+          </p>
+          <Link to="/register" className="btn-primary btn-large">
+            Create your free account
+          </Link>
+          <p className="cta-login">
+            Already have an account?{" "}
+            <Link to="/login" className="cta-link">
+              Log in
+            </Link>
+          </p>
+        </div>
+      </div>
+
+      {/* Simple footer */}
+      <footer className="landing-footer">
+        <p>© {new Date().getFullYear()} saadIXsocials. Built with React.</p>
+      </footer>
     </div>
   );
 };

@@ -163,6 +163,10 @@
   border-top: 1px solid var(--color-border);
 }
 
+.clickable {
+  cursor: pointer;
+}
+
 .stat {
   display: flex;
   flex-direction: column;

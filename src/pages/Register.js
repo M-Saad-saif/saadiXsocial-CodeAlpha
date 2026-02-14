@@ -82,7 +82,7 @@ const Register = () => {
     setIsLoading(false);
 
     if (result.success) {
-      navigate('/');
+      navigate('/feedinterface');
     }
   };
 

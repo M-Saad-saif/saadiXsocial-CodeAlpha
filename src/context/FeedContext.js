@@ -84,8 +84,10 @@ export const FeedProvider = ({ children }) => {
       setPosts((prevPosts) => prevPosts.filter((post) => post._id !== postId));
 
       toast.success("Post deleted successfully");
+      return true;
     } catch (error) {
       toast.error(error.message || "Failed to delete post");
+      throw error;
     }
   }, []);
 

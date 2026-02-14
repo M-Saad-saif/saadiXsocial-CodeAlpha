@@ -237,7 +237,7 @@ const getSuggestedUsers = async (req, res) => {
     const currentUserId = req.user.id;
     
     const currentUser = await UserModel.findById(currentUserId).select('following');
-    const followingList = currentUser.following || [];
+    const followingList = currentUser?.following || [];
 
     // Use MongoDB aggregation pipeline for efficient random selection
     const suggestedUsers = await UserModel.aggregate([
@@ -273,6 +273,48 @@ const getSuggestedUsers = async (req, res) => {
   }
 };
 
+// desc    Get followers list for a user
+// route   GET /api/user/:id/followers
+// access  Private
+const getFollowers = async (req, res) => {
+  try {
+    const targetUserId = req.params.id;
+
+    const user = await UserModel.findById(targetUserId)
+      .select('followers')
+      .populate('followers', 'name profileImage email');
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    res.json({ success: true, count: user.followers.length, data: user.followers });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// desc    Get following list for a user
+// route   GET /api/user/:id/following
+// access  Private
+const getFollowing = async (req, res) => {
+  try {
+    const targetUserId = req.params.id;
+
+    const user = await UserModel.findById(targetUserId)
+      .select('following')
+      .populate('following', 'name profileImage email');
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    res.json({ success: true, count: user.following.length, data: user.following });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 module.exports = {
   getuser,
   getUserById,
@@ -282,4 +324,6 @@ module.exports = {
   unfollowUser,
   searchUsers,
   getSuggestedUsers,
+  getFollowers,
+  getFollowing,
 };

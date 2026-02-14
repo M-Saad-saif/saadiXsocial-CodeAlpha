@@ -6,10 +6,6 @@ import { toast } from "react-toastify";
 import { FiX, FiAlertTriangle } from "react-icons/fi";
 import "../styles/Modal.css";
 
-/**
- * Delete Account Modal Component
- * Confirmation modal for account deletion with warning
- */
 const DeleteAccountModal = ({ onClose }) => {
   const navigate = useNavigate();
   const { logout } = useAuth();

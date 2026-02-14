@@ -1,0 +1,52 @@
+.followers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.f-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  border-radius: 8px;
+  transition: background 0.15s ease;
+}
+
+.f-item:hover {
+  background: var(--color-bg-hover);
+}
+
+.f-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--color-accent-primary);
+}
+
+.f-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.f-username {
+  background: transparent;
+  border: none;
+  color: var(--color-text-primary);
+  font-weight: 600;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+
+.f-name {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+.error-message {
+  color: var(--color-error);
+  text-align: center;
+}

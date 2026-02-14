@@ -11,13 +11,9 @@ import { getUserPosts } from "../services/postService";
 import { toast } from "react-toastify";
 import AccountSettings from "../components/AccountSettings";
 import PostCard from "../components/PostCard";
+import FollowersModal from "../components/FollowersModal";
 import "../styles/Profile.css";
 
-
-/**
- * Profile Page Component
- * Displays user profile with posts and follow functionality
- */
 const Profile = () => {
   const { userId } = useParams();
   const navigate = useNavigate();
@@ -28,12 +24,14 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [postsLoading, setPostsLoading] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
+  const [followersOpen, setFollowersOpen] = useState(false);
+  const [followingOpen, setFollowingOpen] = useState(false);
 
   const isOwnProfile =
     !userId ||
-    userId === currentUser?.id ||
-    userId === currentUser?._id ||
-    String(userId) === String(currentUser?._id);
+    userId === currentUser.id ||
+    userId === currentUser._id ||
+    String(userId) === String(currentUser._id);
 
   // Fetch profile data
   useEffect(() => {
@@ -65,6 +63,7 @@ const Profile = () => {
     };
 
     fetchProfile();
+    // eslint-disable-next-line
   }, [userId, isOwnProfile]); // Removed currentUser from dependencies to prevent unnecessary re-renders
 
   /**
@@ -122,7 +121,7 @@ const Profile = () => {
   // Handle post deletion (remove from posts list)
   const handlePostDeleted = (deletedPostId) => {
     setUserPosts((prevPosts) =>
-      prevPosts.filter((post) => post._id !== deletedPostId)
+      prevPosts.filter((post) => post._id !== deletedPostId),
     );
   };
 
@@ -201,13 +200,23 @@ const Profile = () => {
           )}
 
           <div className="profile-stats">
-            <div className="stat">
+            <div
+              className="stat clickable"
+              onClick={() => setFollowersOpen(true)}
+              role="button"
+              tabIndex={0}
+            >
               <span className="stat-value">
                 {profileUser.followers?.length || 0}
               </span>
               <span className="stat-label">Followers</span>
             </div>
-            <div className="stat">
+            <div
+              className="stat clickable"
+              onClick={() => setFollowingOpen(true)}
+              role="button"
+              tabIndex={0}
+            >
               <span className="stat-value">
                 {profileUser.following?.length || 0}
               </span>
@@ -237,6 +246,7 @@ const Profile = () => {
                   post={post}
                   currentUser={currentUser}
                   onPostDeleted={handlePostDeleted}
+                  showProfileDeleteButton={isOwnProfile}
                 />
               </div>
             ))}
@@ -247,6 +257,20 @@ const Profile = () => {
           </div>
         )}
       </div>
+
+      {/* Followers / Following Modals */}
+      <FollowersModal
+        open={followersOpen}
+        onClose={() => setFollowersOpen(false)}
+        userId={profileUser._id || profileUser.id}
+        type="followers"
+      />
+      <FollowersModal
+        open={followingOpen}
+        onClose={() => setFollowingOpen(false)}
+        userId={profileUser._id || profileUser.id}
+        type="following"
+      />
     </div>
   );
 };

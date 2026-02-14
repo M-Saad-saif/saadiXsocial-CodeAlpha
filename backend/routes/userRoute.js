@@ -9,6 +9,8 @@ const {
   unfollowUser,
   searchUsers,
   getSuggestedUsers,
+  getFollowers,
+  getFollowing,
 } = require("../controllers/userController");
 
 // protected routes - specific routes first, then :id routes
@@ -19,6 +21,9 @@ router.put("/followuser/:id", protect, followUser);
 router.put("/unfollowuser/:id", protect, unfollowUser);
 router.get("/search", protect, searchUsers);
 router.get("/suggestions", protect, getSuggestedUsers);
+// followers / following routes must come before generic /:id
+router.get("/:id/followers", protect, getFollowers);
+router.get("/:id/following", protect, getFollowing);
 router.get("/:id", protect, getUserById);
 
 module.exports = router;

@@ -1,24 +1,22 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { getSuggestedUsers, followUser, unfollowUser } from '../services/userService';
-import { FiTrendingUp, FiUsers, FiUserPlus, FiUserCheck } from 'react-icons/fi';
-import { toast } from 'react-toastify';
-import '../styles/Sidebar.css';
+import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
+import {
+  getSuggestedUsers,
+  followUser,
+  unfollowUser,
+} from "../services/userService";
+import { FiTrendingUp, FiUsers, FiUserPlus, FiUserCheck } from "react-icons/fi";
+import { toast } from "react-toastify";
+import "../styles/Sidebar.css";
 
-/**
- * Sidebar Component
- * Side navigation with suggestions and activity
- */
 const Sidebar = () => {
   const navigate = useNavigate();
   const { user, updateUser } = useAuth();
   const [suggestedUsers, setSuggestedUsers] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  /**
-   * Fetch suggested users on component mount
-   */
+  // Fetch suggested users on component mount
   useEffect(() => {
     const fetchSuggestedUsers = async () => {
       try {
@@ -26,7 +24,7 @@ const Sidebar = () => {
         const response = await getSuggestedUsers();
         setSuggestedUsers(response.data || []);
       } catch (error) {
-        console.error('Failed to fetch suggested users:', error);
+        console.error("Failed to fetch suggested users:", error);
         setSuggestedUsers([]);
       } finally {
         setLoading(false);
@@ -36,29 +34,25 @@ const Sidebar = () => {
     fetchSuggestedUsers();
   }, []);
 
-  /**
-   * Navigate to user profile
-   */
+  // Navigate to user profile
   const handleViewProfile = (userId) => {
     navigate(`/profile/${userId}`);
   };
 
-  /**
-   * Handle follow/unfollow action
-   */
+  // Handle follow/unfollow action
   const handleFollowToggle = async (userId, isFollowing) => {
     try {
       if (isFollowing) {
         await unfollowUser(userId);
-        toast.success('Unfollowed user');
-        
+        toast.success("Unfollowed user");
+
         // Update user's following list
         const updatedFollowing = user.following.filter((id) => id !== userId);
         updateUser({ ...user, following: updatedFollowing });
       } else {
         await followUser(userId);
-        toast.success('Following user');
-        
+        toast.success("Following user");
+
         // Update user's following list
         const updatedFollowing = [...(user.following || []), userId];
         updateUser({ ...user, following: updatedFollowing });
@@ -67,17 +61,16 @@ const Sidebar = () => {
       // Update suggested users list
       setSuggestedUsers((prev) =>
         prev.map((u) =>
-          u._id === userId ? { ...u, isFollowing: !isFollowing } : u
-        )
+          u._id === userId ? { ...u, isFollowing: !isFollowing } : u,
+        ),
       );
     } catch (error) {
-      toast.error(error.message || 'Failed to update follow status');
+      toast.error(error.message || "Failed to update follow status");
     }
   };
 
-  /**
-   * Check if user is being followed
-   */
+  // Check if user is being followed
+
   const isFollowing = (userId) => {
     return user?.following?.includes(userId) || false;
   };
@@ -88,7 +81,10 @@ const Sidebar = () => {
       <div className="sidebar-card profile-card">
         <Link to={`/profile/${user?._id}`} className="profile-link">
           <img
-            src={user?.profileImage || 'https://cdn-icons-png.flaticon.com/128/12225/12225935.png'}
+            src={
+              user?.profileImage ||
+              "https://cdn-icons-png.flaticon.com/128/12225/12225935.png"
+            }
             alt={user?.name}
             className="sidebar-avatar"
           />
@@ -129,18 +125,18 @@ const Sidebar = () => {
                   <img
                     src={
                       suggestedUser.profileImage ||
-                      'https://cdn-icons-png.flaticon.com/128/12225/12225935.png'
+                      "https://cdn-icons-png.flaticon.com/128/12225/12225935.png"
                     }
                     alt={suggestedUser.name}
                     className="suggestion-avatar"
                     onClick={() => handleViewProfile(suggestedUser._id)}
-                    style={{ cursor: 'pointer' }}
+                    style={{ cursor: "pointer" }}
                   />
                   <div className="suggestion-info">
                     <h4
                       className="suggestion-name"
                       onClick={() => handleViewProfile(suggestedUser._id)}
-                      style={{ cursor: 'pointer' }}
+                      style={{ cursor: "pointer" }}
                     >
                       {suggestedUser.name}
                     </h4>
@@ -151,15 +147,11 @@ const Sidebar = () => {
                       handleFollowToggle(suggestedUser._id, userIsFollowing)
                     }
                     className={`suggestion-follow-button ${
-                      userIsFollowing ? 'following' : ''
+                      userIsFollowing ? "following" : ""
                     }`}
-                    title={userIsFollowing ? 'Unfollow' : 'Follow'}
+                    title={userIsFollowing ? "Unfollow" : "Follow"}
                   >
-                    {userIsFollowing ? (
-                      <FiUserCheck />
-                    ) : (
-                      <FiUserPlus />
-                    )}
+                    {userIsFollowing ? <FiUserCheck /> : <FiUserPlus />}
                   </button>
                 </div>
               );
@@ -193,11 +185,20 @@ const Sidebar = () => {
 
       {/* Footer */}
       <div className="sidebar-footer">
-        <p>© 2026 SocialConnect</p>
+        <p>© 2026 saadIXsocials</p>
         <div className="footer-links">
-          <a href="/" className="footer-link">About</a>
-          <a href="/" className="footer-link">Privacy</a>
-          <a href="/" className="footer-link">Terms</a>
+          <a href="https://github.com/M-Saad-saif" className="footer-link">
+            Github
+          </a>
+          <a
+            href="https://www.linkedin.com/in/muhammad-saad-saif-10b38a360/"
+            className="footer-link"
+          >
+            Linkedin
+          </a>
+          <a href="mailto:gcsaadsaif123@gmail.com" className="footer-link">
+            Email
+          </a>
         </div>
       </div>
     </aside>

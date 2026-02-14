@@ -4,10 +4,7 @@ import { FiHome, FiPlusSquare, FiUser, FiLogOut, FiMenu } from 'react-icons/fi';
 import { useState } from 'react';
 import '../styles/Navbar.css';
 
-/**
- * Navbar Component
- * Top navigation bar with user actions
- */
+
 const Navbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -15,7 +12,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/');
   };
 
   const toggleMobileMenu = () => {
@@ -25,15 +22,13 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="navbar-container">
-        {/* Logo */}
-        <Link to="/" className="navbar-logo">
+        <Link to="/feedinterface" className="navbar-logo">
           <span className="logo-icon">◉</span>
           <span className="logo-text">saadIXsocials</span>
         </Link>
 
-        {/* Desktop Navigation */}
         <div className="navbar-links">
-          <Link to="/" className="nav-link">
+          <Link to="/feedinterface" className="nav-link">
             <FiHome />
             <span>Home</span>
           </Link>
@@ -47,12 +42,11 @@ const Navbar = () => {
           </Link>
         </div>
 
-        {/* User Menu */}
         <div className="navbar-user">
           <div className="user-info">
             <img
-              src={user?.profileImage || 'https://cdn-icons-png.flaticon.com/128/12225/12225935.png'}
-              alt={user?.name}
+              src={user.profileImage || 'https://cdn-icons-png.flaticon.com/128/12225/12225935.png'}
+              alt={user.name}
               className="user-avatar"
             />
             <span className="user-name">{user?.name}</span>
@@ -63,16 +57,14 @@ const Navbar = () => {
           </button>
         </div>
 
-        {/* Mobile Menu Button */}
         <button className="mobile-menu-button" onClick={toggleMobileMenu}>
           <FiMenu />
         </button>
       </div>
 
-      {/* Mobile Menu */}
       {showMobileMenu && (
         <div className="mobile-menu">
-          <Link to="/" className="mobile-link" onClick={toggleMobileMenu}>
+          <Link to="/feedinterface" className="mobile-link" onClick={toggleMobileMenu}>
             <FiHome />
             <span>Home</span>
           </Link>

@@ -1,9 +1,6 @@
 import '../styles/PostCard.css';
 
-/**
- * PostSkeleton Component
- * Loading skeleton for post cards
- */
+
 const PostSkeleton = () => {
   return (
     <div className="post-card skeleton">

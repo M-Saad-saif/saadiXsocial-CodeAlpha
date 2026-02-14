@@ -1,20 +1,26 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-import { AuthProvider, useAuth } from './context/AuthContext';
-import { FeedProvider } from './context/FeedContext';
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import { FeedProvider } from "./context/FeedContext";
 
 // Pages
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Home from './pages/Home';
-import Profile from './pages/Profile';
-import CreatePost from './pages/CreatePost';
-import NotFound from './pages/NotFound';
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import FeedInterface from "./pages/FeedInterface";
+import Profile from "./pages/Profile";
+import CreatePost from "./pages/CreatePost";
+import NotFound from "./pages/NotFound";
+import HomeInterface from "./pages/Home";
 
 // Layout
-import Layout from './components/Layout';
+import Layout from "./components/Layout";
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -53,6 +59,8 @@ function App() {
         <FeedProvider>
           <div className="app">
             <Routes>
+              <Route path="/" element={<HomeInterface />} />
+
               <Route
                 path="/login"
                 element={
@@ -71,11 +79,11 @@ function App() {
               />
 
               <Route
-                path="/"
+                path="/feedinterface"
                 element={
                   <ProtectedRoute>
                     <Layout>
-                      <Home />
+                      <FeedInterface />
                     </Layout>
                   </ProtectedRoute>
                 }

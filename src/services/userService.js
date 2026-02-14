@@ -79,3 +79,23 @@ export const getSuggestedUsers = async () => {
     throw error.response?.data || { message: 'Failed to fetch suggested users' };
   }
 };
+
+// Get followers for a given user
+export const getFollowers = async (userId) => {
+  try {
+    const response = await api.get(`/api/user/${userId}/followers`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: 'Failed to fetch followers' };
+  }
+};
+
+// Get following for a given user
+export const getFollowing = async (userId) => {
+  try {
+    const response = await api.get(`/api/user/${userId}/following`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: 'Failed to fetch following' };
+  }
+};
