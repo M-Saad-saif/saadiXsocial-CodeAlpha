@@ -1,34 +1,29 @@
-import { useEffect } from 'react';
-import { useFeed } from '../context/FeedContext';
-import { useAuth } from '../context/AuthContext';
-import PostCard from '../components/PostCard';
-import PostSkeleton from '../components/PostSkeleton';
-import SearchUsers from '../components/SearchUsers';
-import { useInView } from 'react-intersection-observer';
-import '../styles/Home.css';
+import { useEffect } from "react";
+import { useFeed } from "../context/FeedContext";
+import { useAuth } from "../context/AuthContext";
+import PostCard from "../components/PostCard";
+import PostSkeleton from "../components/PostSkeleton";
+import SearchUsers from "../components/SearchUsers";
+import { useInView } from "react-intersection-observer";
+import "../styles/Home.css";
 
-/**
- * Home Page Component
- * Displays the main feed with posts from followed users
- */
 const Home = () => {
   const { posts, loading, hasMore, fetchFeed, refreshFeed } = useFeed();
   const { user } = useAuth();
   const { ref, inView } = useInView();
 
-  // Initial feed fetch
   useEffect(() => {
     fetchFeed(true);
+    // eslint-disable-next-line
   }, []);
 
-  // Load more posts when scrolling to bottom
   useEffect(() => {
     if (inView && hasMore && !loading) {
       fetchFeed();
     }
+    // eslint-disable-next-line
   }, [inView, hasMore, loading]);
 
-  // Handle refresh
   const handleRefresh = () => {
     refreshFeed();
   };
@@ -37,9 +32,13 @@ const Home = () => {
     <div className="home-container">
       <div className="home-header">
         <h1 className="home-title">Your Feed</h1>
-        <button onClick={handleRefresh} className="refresh-button" disabled={loading}>
+        <button
+          onClick={handleRefresh}
+          className="refresh-button"
+          disabled={loading}
+        >
           <svg
-            className={`refresh-icon ${loading ? 'spinning' : ''}`}
+            className={`refresh-icon ${loading ? "spinning" : ""}`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"

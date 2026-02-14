@@ -8,6 +8,7 @@ const {
   followUser,
   unfollowUser,
   searchUsers,
+  getSuggestedUsers,
 } = require("../controllers/userController");
 
 // protected routes - specific routes first, then :id routes
@@ -17,8 +18,7 @@ router.delete("/deleteuser", protect, deleteUser);
 router.put("/followuser/:id", protect, followUser);
 router.put("/unfollowuser/:id", protect, unfollowUser);
 router.get("/search", protect, searchUsers);
-
-// generic user by id route - must be last to not interfere with other routes
+router.get("/suggestions", protect, getSuggestedUsers);
 router.get("/:id", protect, getUserById);
 
 module.exports = router;

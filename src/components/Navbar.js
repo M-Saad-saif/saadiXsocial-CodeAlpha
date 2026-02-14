@@ -28,7 +28,7 @@ const Navbar = () => {
         {/* Logo */}
         <Link to="/" className="navbar-logo">
           <span className="logo-icon">◉</span>
-          <span className="logo-text">SocialConnect</span>
+          <span className="logo-text">saadIXsocials</span>
         </Link>
 
         {/* Desktop Navigation */}

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { searchUsers } from "../services/userService";
 import { followUser, unfollowUser } from "../services/userService";
@@ -11,6 +12,7 @@ import "../styles/SearchUsers.css";
  * Allows users to search for other users and follow/unfollow them
  */
 const SearchUsers = () => {
+  const navigate = useNavigate();
   const { user, updateUser } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -42,6 +44,7 @@ const SearchUsers = () => {
     }, 300);
 
     return () => clearTimeout(delayDebounce);
+    // eslint-disable-next-line
   }, [searchQuery]);
 
   // Perform search
@@ -111,6 +114,13 @@ const SearchUsers = () => {
     return user?.following?.includes(userId) || false;
   };
 
+  // Navigate to user profile
+  const handleUserClick = (userId) => {
+    navigate(`/profile/${userId}`);
+    // Clear search after navigation
+    handleClear();
+  };
+
   return (
     <div className="search-users-container" ref={searchRef}>
       <div className="search-input-wrapper">
@@ -145,7 +155,16 @@ const SearchUsers = () => {
 
                 return (
                   <div key={searchUser._id} className="search-result-item">
-                    <div className="search-user-info">
+                    <div
+                      className="search-user-info"
+                      onClick={() => handleUserClick(searchUser._id)}
+                      style={{ cursor: "pointer" }}
+                      role="button"
+                      tabIndex="0"
+                      onKeyPress={(e) => {
+                        if (e.key === "Enter") handleUserClick(searchUser._id);
+                      }}
+                    >
                       <img
                         src={
                           searchUser.profileImage ||

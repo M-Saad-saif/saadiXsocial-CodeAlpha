@@ -1,10 +1,5 @@
 import api from '../utils/api';
 
-/**
- * User API Services
- * Handles all user-related API calls
- */
-
 // Get current user profile
 export const getCurrentUser = async () => {
   try {
@@ -72,5 +67,15 @@ export const searchUsers = async (query) => {
     return response.data;
   } catch (error) {
     throw error.response?.data || { message: 'Failed to search users' };
+  }
+};
+
+// Get suggested users (random users not yet followed)
+export const getSuggestedUsers = async () => {
+  try {
+    const response = await api.get('/api/user/suggestions');
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: 'Failed to fetch suggested users' };
   }
 };

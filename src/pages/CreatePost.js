@@ -1,24 +1,20 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { createPost } from '../services/postService';
-import { useFeed } from '../context/FeedContext';
-import { toast } from 'react-toastify';
-import '../styles/CreatePost.css';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { createPost } from "../services/postService";
+import { useFeed } from "../context/FeedContext";
+import { toast } from "react-toastify";
+import "../styles/CreatePost.css";
 
-/**
- * Create Post Page Component
- * Allows users to create new posts with image and description
- */
 const CreatePost = () => {
   const navigate = useNavigate();
   const { addPost } = useFeed();
 
   const [formData, setFormData] = useState({
-    description: '',
-    postImage: '',
+    description: "",
+    postImage: "",
   });
 
-  const [imagePreview, setImagePreview] = useState('');
+  const [imagePreview, setImagePreview] = useState("");
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
@@ -29,12 +25,12 @@ const CreatePost = () => {
       ...prev,
       [name]: value,
     }));
-    
+
     // Clear error for this field
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
-        [name]: '',
+        [name]: "",
       }));
     }
   };
@@ -47,11 +43,11 @@ const CreatePost = () => {
       postImage: url,
     }));
     setImagePreview(url);
-    
+
     if (errors.postImage) {
       setErrors((prev) => ({
         ...prev,
-        postImage: '',
+        postImage: "",
       }));
     }
   };
@@ -61,13 +57,13 @@ const CreatePost = () => {
     const newErrors = {};
 
     if (!formData.postImage.trim()) {
-      newErrors.postImage = 'Image URL is required';
+      newErrors.postImage = "Image URL is required";
     } else {
       // Basic URL validation
       try {
         new URL(formData.postImage);
       } catch {
-        newErrors.postImage = 'Please enter a valid image URL';
+        newErrors.postImage = "Please enter a valid image URL";
       }
     }
 
@@ -85,16 +81,16 @@ const CreatePost = () => {
 
     try {
       const response = await createPost(formData);
-      
+
       if (response.success) {
         // Add post to feed
         addPost(response.post);
-        
-        toast.success(response.message || 'Post created successfully!');
-        navigate('/');
+
+        toast.success(response.message || "Post created successfully!");
+        navigate("/");
       }
     } catch (error) {
-      toast.error(error.message || 'Failed to create post');
+      toast.error(error.message || "Failed to create post");
     } finally {
       setIsLoading(false);
     }
@@ -102,7 +98,7 @@ const CreatePost = () => {
 
   // Handle cancel
   const handleCancel = () => {
-    navigate('/');
+    navigate("/");
   };
 
   return (
@@ -110,7 +106,9 @@ const CreatePost = () => {
       <div className="create-post-card">
         <div className="create-post-header">
           <h1 className="create-post-title">Create New Post</h1>
-          <p className="create-post-subtitle">Share your moment with the world</p>
+          <p className="create-post-subtitle">
+            Share your moment with the world
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="create-post-form">
@@ -125,7 +123,7 @@ const CreatePost = () => {
               name="postImage"
               value={formData.postImage}
               onChange={handleImageChange}
-              className={`form-input ${errors.postImage ? 'input-error' : ''}`}
+              className={`form-input ${errors.postImage ? "input-error" : ""}`}
               placeholder="https://example.com/image.jpg"
             />
             {errors.postImage && (
@@ -143,10 +141,10 @@ const CreatePost = () => {
                 src={imagePreview}
                 alt="Preview"
                 onError={() => {
-                  setImagePreview('');
+                  setImagePreview("");
                   setErrors((prev) => ({
                     ...prev,
-                    postImage: 'Failed to load image. Please check the URL.',
+                    postImage: "Failed to load image. Please check the URL.",
                   }));
                 }}
               />
@@ -194,7 +192,7 @@ const CreatePost = () => {
                   Posting...
                 </span>
               ) : (
-                'Post'
+                "Post"
               )}
             </button>
           </div>

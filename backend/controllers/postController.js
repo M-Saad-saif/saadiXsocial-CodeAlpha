@@ -98,12 +98,35 @@ const getFeed = async (req, res) => {
   const posts = await PostModel.find({
     user: { $in: [...user.following, req.user.id] },
   })
-    .populate("user", "name")
+    .populate("user", "name profileImage")
     .sort({ createdAt: -1 });
 
   res.json(posts);
 };
 
+// desc    Get all posts by a specific user
+// route   GET /api/post/user/:userId
+// access  Private
+const getUserPosts = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    
+    const posts = await PostModel.find({ user: userId })
+      .populate("user", "name profileImage email")
+      .sort({ createdAt: -1 });
+    
+    res.json({
+      success: true,
+      count: posts.length,
+      data: posts,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 
 module.exports = {
   createPost,
@@ -111,4 +134,5 @@ module.exports = {
   deletePost,
   likePost,
   getFeed,
+  getUserPosts,
 };

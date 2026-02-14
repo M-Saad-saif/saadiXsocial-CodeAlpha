@@ -9,7 +9,7 @@ import '../styles/PostCard.css';
  * PostCard Component
  * Displays individual post with interactions
  */
-const PostCard = ({ post, currentUser }) => {
+const PostCard = ({ post, currentUser, onPostDeleted }) => {
   const { likePost, deletePost } = useFeed();
   const [showMenu, setShowMenu] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -32,6 +32,10 @@ const PostCard = ({ post, currentUser }) => {
   const handleDelete = () => {
     if (window.confirm('Are you sure you want to delete this post?')) {
       deletePost(post._id);
+      // Notify parent component about deletion
+      if (onPostDeleted) {
+        onPostDeleted(post._id);
+      }
     }
   };
 

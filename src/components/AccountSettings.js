@@ -4,10 +4,6 @@ import EditProfileModal from './EditProfileModal';
 import DeleteAccountModal from './DeleteAccountModal';
 import '../styles/AccountSettings.css';
 
-/**
- * Account Settings Component
- * Dropdown menu for profile settings options
- */
 const AccountSettings = ({ user, onProfileUpdate }) => {
   const [showMenu, setShowMenu] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);

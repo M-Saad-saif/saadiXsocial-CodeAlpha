@@ -1,10 +1,5 @@
 import api from '../utils/api';
 
-/**
- * Post API Services
- * Handles all post-related API calls
- */
-
 // Create a new post
 export const createPost = async (postData) => {
   try {
@@ -32,6 +27,16 @@ export const getFeed = async () => {
     return response.data;
   } catch (error) {
     throw error.response?.data || { message: 'Failed to fetch feed' };
+  }
+};
+
+// Get all posts by a specific user
+export const getUserPosts = async (userId) => {
+  try {
+    const response = await api.get(`/api/post/user/${userId}`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: 'Failed to fetch user posts' };
   }
 };
 

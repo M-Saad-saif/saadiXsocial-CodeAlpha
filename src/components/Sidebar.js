@@ -1,6 +1,9 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { FiTrendingUp, FiUsers } from 'react-icons/fi';
+import { getSuggestedUsers, followUser, unfollowUser } from '../services/userService';
+import { FiTrendingUp, FiUsers, FiUserPlus, FiUserCheck } from 'react-icons/fi';
+import { toast } from 'react-toastify';
 import '../styles/Sidebar.css';
 
 /**
@@ -8,7 +11,76 @@ import '../styles/Sidebar.css';
  * Side navigation with suggestions and activity
  */
 const Sidebar = () => {
-  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { user, updateUser } = useAuth();
+  const [suggestedUsers, setSuggestedUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  /**
+   * Fetch suggested users on component mount
+   */
+  useEffect(() => {
+    const fetchSuggestedUsers = async () => {
+      try {
+        setLoading(true);
+        const response = await getSuggestedUsers();
+        setSuggestedUsers(response.data || []);
+      } catch (error) {
+        console.error('Failed to fetch suggested users:', error);
+        setSuggestedUsers([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSuggestedUsers();
+  }, []);
+
+  /**
+   * Navigate to user profile
+   */
+  const handleViewProfile = (userId) => {
+    navigate(`/profile/${userId}`);
+  };
+
+  /**
+   * Handle follow/unfollow action
+   */
+  const handleFollowToggle = async (userId, isFollowing) => {
+    try {
+      if (isFollowing) {
+        await unfollowUser(userId);
+        toast.success('Unfollowed user');
+        
+        // Update user's following list
+        const updatedFollowing = user.following.filter((id) => id !== userId);
+        updateUser({ ...user, following: updatedFollowing });
+      } else {
+        await followUser(userId);
+        toast.success('Following user');
+        
+        // Update user's following list
+        const updatedFollowing = [...(user.following || []), userId];
+        updateUser({ ...user, following: updatedFollowing });
+      }
+
+      // Update suggested users list
+      setSuggestedUsers((prev) =>
+        prev.map((u) =>
+          u._id === userId ? { ...u, isFollowing: !isFollowing } : u
+        )
+      );
+    } catch (error) {
+      toast.error(error.message || 'Failed to update follow status');
+    }
+  };
+
+  /**
+   * Check if user is being followed
+   */
+  const isFollowing = (userId) => {
+    return user?.following?.includes(userId) || false;
+  };
 
   return (
     <aside className="sidebar">
@@ -44,9 +116,59 @@ const Sidebar = () => {
           <h3 className="card-title">Suggestions</h3>
         </div>
         <div className="suggestions-list">
-          <div className="suggestion-item">
-            <p className="suggestion-text">Follow users to see posts in your feed</p>
-          </div>
+          {loading ? (
+            <div className="suggestions-loading">
+              <div className="loading-spinner-small"></div>
+              <p>Loading...</p>
+            </div>
+          ) : suggestedUsers.length > 0 ? (
+            suggestedUsers.map((suggestedUser) => {
+              const userIsFollowing = isFollowing(suggestedUser._id);
+              return (
+                <div key={suggestedUser._id} className="suggestion-item">
+                  <img
+                    src={
+                      suggestedUser.profileImage ||
+                      'https://cdn-icons-png.flaticon.com/128/12225/12225935.png'
+                    }
+                    alt={suggestedUser.name}
+                    className="suggestion-avatar"
+                    onClick={() => handleViewProfile(suggestedUser._id)}
+                    style={{ cursor: 'pointer' }}
+                  />
+                  <div className="suggestion-info">
+                    <h4
+                      className="suggestion-name"
+                      onClick={() => handleViewProfile(suggestedUser._id)}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      {suggestedUser.name}
+                    </h4>
+                    <p className="suggestion-email">{suggestedUser.email}</p>
+                  </div>
+                  <button
+                    onClick={() =>
+                      handleFollowToggle(suggestedUser._id, userIsFollowing)
+                    }
+                    className={`suggestion-follow-button ${
+                      userIsFollowing ? 'following' : ''
+                    }`}
+                    title={userIsFollowing ? 'Unfollow' : 'Follow'}
+                  >
+                    {userIsFollowing ? (
+                      <FiUserCheck />
+                    ) : (
+                      <FiUserPlus />
+                    )}
+                  </button>
+                </div>
+              );
+            })
+          ) : (
+            <div className="suggestion-item">
+              <p className="suggestion-text">No more users to follow</p>
+            </div>
+          )}
         </div>
       </div>
 

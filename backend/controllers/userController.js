@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const PostModel = require("../models/Post");
 const UserModel = require("../models/User");
 
@@ -209,7 +210,7 @@ const searchUsers = async (req, res) => {
       });
     }
 
-    // Search users by name or email (case-insensitive)
+    // Search users by name or email 
     const users = await UserModel.find({
       $or: [
         { name: { $regex: q, $options: 'i' } },
@@ -228,6 +229,49 @@ const searchUsers = async (req, res) => {
   }
 };
 
+// desc    Get suggested users for the logged-in user
+// route   GET /api/user/suggestions
+// access  Private
+const getSuggestedUsers = async (req, res) => {
+  try {
+    const currentUserId = req.user.id;
+    
+    const currentUser = await UserModel.findById(currentUserId).select('following');
+    const followingList = currentUser.following || [];
+
+    // Use MongoDB aggregation pipeline for efficient random selection
+    const suggestedUsers = await UserModel.aggregate([
+      {
+        $match: {
+          // Exclude current user and users already being followed
+          _id: {
+            $nin: [new mongoose.Types.ObjectId(currentUserId), ...followingList],
+          },
+        },
+      },
+      // Randomly sample 5 users
+      { $sample: { size: 5 } },
+      // Project only necessary fields (exclude password)
+      {
+        $project: {
+          password: 0,
+          __v: 0,
+        },
+      },
+    ]);
+
+    res.json({
+      success: true,
+      count: suggestedUsers.length,
+      data: suggestedUsers,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 
 module.exports = {
   getuser,
@@ -236,5 +280,6 @@ module.exports = {
   deleteUser,
   followUser,
   unfollowUser,
-  searchUsers, 
+  searchUsers,
+  getSuggestedUsers,
 };

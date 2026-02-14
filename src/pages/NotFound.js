@@ -1,9 +1,6 @@
 import { Link } from 'react-router-dom';
 import '../styles/NotFound.css';
 
-/**
- * 404 Not Found Page Component
- */
 const NotFound = () => {
   return (
     <div className="not-found-container">
