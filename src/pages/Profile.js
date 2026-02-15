@@ -196,7 +196,7 @@ const Profile = () => {
           </div>
 
           {profileUser.boidata && (
-            <p className="profile-bio">{profileUser.boidata}</p>
+            <p className="profile-bio"><span style={{color:"white", fontWeight:"bold"}}>Bio: </span>  {profileUser.boidata}</p>
           )}
 
           <div className="profile-stats">

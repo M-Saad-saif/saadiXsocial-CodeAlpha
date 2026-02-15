@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
 import {
   FiHeart,
-  FiMessageCircle,
   FiTrash2,
   FiMoreVertical,
 } from "react-icons/fi";
@@ -136,10 +135,6 @@ const PostCard = ({
           <FiHeart className={isLiked ? "filled" : ""} />
           <span>{likesCount}</span>
         </button>
-        <button className="action-button">
-          <FiMessageCircle />
-          <span>0</span>
-        </button>
       </div>
 
       {/* Post Description */}
@@ -149,7 +144,7 @@ const PostCard = ({
             to={`/profile/${post.user?._id}`}
             className="description-author"
           >
-            {post.user?.name}
+            {post.user.name}
           </Link>
           <span className="description-text">{post.description}</span>
         </div>

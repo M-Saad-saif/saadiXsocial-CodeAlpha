@@ -1,8 +1,3 @@
-/* ========================================
-   SIDEBAR
-   Side panel with user info and suggestions
-   ======================================== */
-
 .sidebar {
   width: 300px;
   padding: var(--spacing-xl);
@@ -22,6 +17,7 @@
     opacity: 0;
     transform: translateX(-20px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);

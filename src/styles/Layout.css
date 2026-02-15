@@ -1,7 +1,3 @@
-/* ========================================
-   LAYOUT STRUCTURE
-   ======================================== */
-
 .layout {
   display: flex;
   flex-direction: column;
@@ -14,13 +10,15 @@
   max-width: 1600px;
   margin: 0 auto;
   width: 100%;
-  padding-top: 70px; /* Account for fixed navbar */
+  padding-top: 70px;
+  /* Account for fixed navbar */
 }
 
 .layout-main {
   flex: 1;
   padding: var(--spacing-xl);
-  min-width: 0; /* Prevent flex overflow */
+  min-width: 0;
+  /* Prevent flex overflow */
   animation: fadeIn 0.4s ease;
 }
 

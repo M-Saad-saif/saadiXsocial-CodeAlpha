@@ -143,6 +143,17 @@ const Home = () => {
       {/* Simple footer */}
       <footer className="landing-footer">
         <p>© {new Date().getFullYear()} saadIXsocials. Built with React.</p>
+        <div className="home-footer-links">
+          <Link to="https://github.com/M-Saad-saif">
+            <i class="ri-github-fill"></i>GitHub
+          </Link>
+          <Link to="https://www.linkedin.com/in/muhammad-saad-saif-10b38a360/">
+            <i class="ri-linkedin-box-fill"></i>Linkdin
+          </Link>
+          <Link to="mailto:gcsaadsaif123@gmail.com">
+            <i class="ri-mail-fill"></i>Email
+          </Link>
+        </div>
       </footer>
     </div>
   );

@@ -1,8 +1,3 @@
-/* ========================================
-   NAVBAR
-   Sleek, modern navigation bar
-   ======================================== */
-
 .navbar {
   position: fixed;
   top: 0;
@@ -19,6 +14,7 @@
   from {
     transform: translateY(-100%);
   }
+
   to {
     transform: translateY(0);
   }

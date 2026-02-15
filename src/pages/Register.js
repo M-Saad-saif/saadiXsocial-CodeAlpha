@@ -108,7 +108,7 @@ const Register = () => {
               value={formData.name}
               onChange={handleChange}
               className={`form-input ${errors.name ? 'input-error' : ''}`}
-              placeholder="John Doe"
+              placeholder="Name"
               autoComplete="name"
             />
             {errors.name && <span className="error-message">{errors.name}</span>}
