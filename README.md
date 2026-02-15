@@ -78,16 +78,18 @@ saadiXsocial-CodeAlpha/
 ├── public/ 
     ├── saadIXsocails.ico
     ├── manifest.json
-    └── index.html 
+    └── index.html
 ├── src/ 
     ├── Images/ 
     │   └── saadIXsocailicon.png
+    |
     ├── App.css
     ├── setupTests.js
     ├── App.test.js
     ├── index.js
     ├── reportWebVitals.js
-    ├── components/ (
+    |
+    ├── components/ 
     │   ├── Layout.js
     │   ├── PostSkeleton.js 
     │   ├── Navbar.js 
@@ -97,6 +99,7 @@ saadiXsocial-CodeAlpha/
     │   ├── PostCard.js 
     │   ├── Sidebar.js 
     │   └── SearchUsers.js 
+    |
     ├── pages/ 
     │   ├── NotFound.js 
     │   ├── FeedInterface.js
@@ -105,6 +108,7 @@ saadiXsocial-CodeAlpha/
     │   ├── Register.js 
     │   ├── CreatePost.js
     │   └── Profile.js
+    |
     ├── styles/  
     │   ├── Layout.css  
     │   ├── FollowersModal.css  
@@ -120,37 +124,47 @@ saadiXsocial-CodeAlpha/
     │   ├── Sidebar.css  
     │   ├── PostCard.css   
     │   └── Home.css  
+    |
     ├── services/  
     │   ├── authService.js 
     │   ├── postService.js  
     │   └── userService.js 
+    |
     ├── utils/ 
     │   └── api.js  
+    |
     ├── context/ 
     │   ├── FeedContext.js  
     │   └── AuthContext.js  
+    |
     ├── App.js  
-    └── index.css  
+    └── index.css
+
 ├── backend/  
     ├── routes/ 
     │   ├── authRoute.js
     │   ├── postRoute.js 
     │   └── userRoute.js  
+    |
     ├── config/ 
     │   ├── cloudinary.js
     │   ├── multerConfig.js
     │   └── db.js  
+    |
     ├── models/  
     │   ├── Post.js 
-    │   └── User.js 
+    │   └── User.js
+    |
     ├── package.json  
     ├── middleware/
-    │   └── authmiddleware.js  
-    ├── server.js  
-    └── controllers/  
+    │   └── authmiddleware.js
+    |
+    ├── controllers/  
     │   ├── authController.js  
     │   ├── postController.js  
-    │   └── userController.js 
+    │   └── userController.js
+    └── server.js
+
 ├── .gitignore
 ├── vercel.json  
 ├── package.json  
@@ -255,6 +269,8 @@ CLOUDINARY_API_SECRET=your_cloudinary_secret
 ### Frontend (.env.local)
 ```env
 VITE_API_URL=http://localhost:5000/api
+OR
+REACT_APP_BACKEND_URL:-----
 ```
 
 ## 📦 Deployment
