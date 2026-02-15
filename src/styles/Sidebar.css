@@ -48,9 +48,9 @@
 .profile-link {
   display: flex;
   align-items: center;
-  gap: var(--spacing-md);
   margin-bottom: var(--spacing-md);
   text-decoration: none;
+  width: 17rem;
 }
 
 .sidebar-avatar {

@@ -21,6 +21,26 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const hydrateCurrentUser = async (fallbackUser = null) => {
+    try {
+      const currentUserResponse = await getCurrentUser();
+      if (currentUserResponse?.data) {
+        setUser(currentUserResponse.data);
+        localStorage.setItem("user", JSON.stringify(currentUserResponse.data));
+        return currentUserResponse.data;
+      }
+    } catch (error) {
+      if (fallbackUser) {
+        setUser(fallbackUser);
+        localStorage.setItem("user", JSON.stringify(fallbackUser));
+        return fallbackUser;
+      }
+      throw error;
+    }
+
+    return fallbackUser;
+  };
+
   // Initialize auth state from localStorage on mount
   useEffect(() => {
     const initializeAuth = async () => {
@@ -29,9 +49,14 @@ export const AuthProvider = ({ children }) => {
 
       if (token && storedUser) {
         try {
-          const response = await getCurrentUser();
-          setUser(response.data);
-          localStorage.setItem("user", JSON.stringify(response.data));
+          let parsedStoredUser = null;
+          try {
+            parsedStoredUser = JSON.parse(storedUser);
+          } catch (parseError) {
+            parsedStoredUser = null;
+          }
+
+          await hydrateCurrentUser(parsedStoredUser);
         } catch (error) {
           localStorage.removeItem("token");
           localStorage.removeItem("user");
@@ -52,10 +77,9 @@ export const AuthProvider = ({ children }) => {
       if (response.success && response.data) {
         const { token, ...userInfo } = response.data;
 
-        // Store token and user data
+        // Store token first, then hydrate full user payload
         localStorage.setItem("token", token);
-        localStorage.setItem("user", JSON.stringify(userInfo));
-        setUser(userInfo);
+        await hydrateCurrentUser(userInfo);
 
         toast.success(response.message || "Registration successful!");
         return { success: true };
@@ -74,10 +98,9 @@ export const AuthProvider = ({ children }) => {
       if (response.success && response.data) {
         const { token, ...userInfo } = response.data;
 
-        // Store token and user data
+        // Store token first, then hydrate full user payload
         localStorage.setItem("token", token);
-        localStorage.setItem("user", JSON.stringify(userInfo));
-        setUser(userInfo);
+        await hydrateCurrentUser(userInfo);
 
         toast.success(response.message || "Login successful!");
         return { success: true };

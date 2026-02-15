@@ -1,25 +1,38 @@
-import { useState } from 'react';
-import { updateUserProfile } from '../services/userService';
-import { toast } from 'react-toastify';
-import { FiX } from 'react-icons/fi';
-import '../styles/Modal.css';
+import { useEffect, useRef, useState } from "react";
+import {
+  updateUserProfile,
+  uploadProfilePicture,
+  uploadCoverPicture,
+} from "../services/userService";
+import { toast } from "react-toastify";
+import { FiX } from "react-icons/fi";
+import "../styles/Modal.css";
 
-/**
- * Edit Profile Modal Component
- * Modal for editing user profile information
- */
 const EditProfileModal = ({ user, onClose, onUpdate }) => {
+  const profileFileInputRef = useRef(null);
+  const coverFileInputRef = useRef(null);
   const [formData, setFormData] = useState({
-    name: user.name || '',
-    boidata: user.boidata || '',
-    profileImage: user.profileImage || '',
-    coverImage: user.coverImage || '',
-    oldPassword: '',
-    newPassword: '',
+    name: user?.name || "",
+    boidata: user?.boidata || "",
+    profileImage: user?.profileImage || "",
+    coverImage: user?.coverImage || "",
+    oldPassword: "",
+    newPassword: "",
   });
 
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedProfileFile, setSelectedProfileFile] = useState(null);
+  const [selectedCoverFile, setSelectedCoverFile] = useState(null);
+  const [profilePreview, setProfilePreview] = useState(user?.profileImage || "");
+  const [coverPreview, setCoverPreview] = useState(user?.coverImage || "");
+
+  const mergeUserData = (baseUser, partialUser) => ({
+    ...(baseUser || {}),
+    ...(partialUser || {}),
+    followers: partialUser?.followers ?? baseUser?.followers ?? [],
+    following: partialUser?.following ?? baseUser?.following ?? [],
+  });
 
   // Handle input changes
   const handleChange = (e) => {
@@ -28,37 +41,111 @@ const EditProfileModal = ({ user, onClose, onUpdate }) => {
       ...prev,
       [name]: value,
     }));
-    
+
     // Clear error for this field
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
-        [name]: '',
+        [name]: "",
       }));
     }
   };
+
+  const validateImageFile = (file, inputElement) => {
+    if (!file) {
+      return false;
+    }
+
+    if (!file.type?.startsWith("image/")) {
+      toast.error("Please select a valid image file");
+      if (inputElement) inputElement.value = "";
+      return false;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image size must be 5MB or less");
+      if (inputElement) inputElement.value = "";
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleProfileFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) {
+      setSelectedProfileFile(null);
+      return;
+    }
+
+    if (!validateImageFile(file, e.target)) {
+      return;
+    }
+
+    setSelectedProfileFile(file);
+  };
+
+  const handleCoverFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) {
+      setSelectedCoverFile(null);
+      return;
+    }
+
+    if (!validateImageFile(file, e.target)) {
+      return;
+    }
+
+    setSelectedCoverFile(file);
+  };
+
+  useEffect(() => {
+    if (!selectedProfileFile) {
+      setProfilePreview(formData.profileImage || user?.profileImage || "");
+      return;
+    }
+
+    const previewUrl = URL.createObjectURL(selectedProfileFile);
+    setProfilePreview(previewUrl);
+
+    return () => URL.revokeObjectURL(previewUrl);
+  }, [selectedProfileFile, formData.profileImage, user?.profileImage]);
+
+  useEffect(() => {
+    if (!selectedCoverFile) {
+      setCoverPreview(formData.coverImage || user?.coverImage || "");
+      return;
+    }
+
+    const previewUrl = URL.createObjectURL(selectedCoverFile);
+    setCoverPreview(previewUrl);
+
+    return () => URL.revokeObjectURL(previewUrl);
+  }, [selectedCoverFile, formData.coverImage, user?.coverImage]);
 
   // Validate form
   const validate = () => {
     const newErrors = {};
 
     if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
+      newErrors.name = "Name is required";
     } else if (formData.name.trim().length < 2) {
-      newErrors.name = 'Name must be at least 2 characters';
+      newErrors.name = "Name must be at least 2 characters";
     }
 
     // If password change is attempted, validate both fields
     if (formData.oldPassword || formData.newPassword) {
       if (!formData.oldPassword) {
-        newErrors.oldPassword = 'Current password is required to change password';
+        newErrors.oldPassword =
+          "Current password is required to change password";
       }
       if (!formData.newPassword) {
-        newErrors.newPassword = 'New password is required';
+        newErrors.newPassword = "New password is required";
       } else if (formData.newPassword.length < 6) {
-        newErrors.newPassword = 'New password must be at least 6 characters';
+        newErrors.newPassword = "New password must be at least 6 characters";
       } else if (formData.newPassword === formData.oldPassword) {
-        newErrors.newPassword = 'New password must be different from current password';
+        newErrors.newPassword =
+          "New password must be different from current password";
       }
     }
 
@@ -75,28 +162,59 @@ const EditProfileModal = ({ user, onClose, onUpdate }) => {
     setIsLoading(true);
 
     try {
+      let stagedUser = user || {};
+
+      if (selectedProfileFile) {
+        const profileUploadResponse =
+          await uploadProfilePicture(selectedProfileFile);
+        if (!profileUploadResponse?.success || !profileUploadResponse?.user) {
+          throw new Error(
+            profileUploadResponse?.message || "Profile picture upload failed",
+          );
+        }
+
+        stagedUser = mergeUserData(stagedUser, profileUploadResponse.user);
+      }
+
+      if (selectedCoverFile) {
+        const coverUploadResponse = await uploadCoverPicture(selectedCoverFile);
+        if (!coverUploadResponse?.success || !coverUploadResponse?.user) {
+          throw new Error(
+            coverUploadResponse?.message || "Cover image upload failed",
+          );
+        }
+
+        stagedUser = mergeUserData(stagedUser, coverUploadResponse.user);
+      }
+
       // Only send fields that have values
       const updateData = {
         name: formData.name,
       };
 
       if (formData.boidata) updateData.boidata = formData.boidata;
-      if (formData.profileImage) updateData.profileImage = formData.profileImage;
-      if (formData.coverImage) updateData.coverImage = formData.coverImage;
+      if (stagedUser?.profileImage)
+        updateData.profileImage = stagedUser.profileImage;
+      if (stagedUser?.coverImage) updateData.coverImage = stagedUser.coverImage;
       if (formData.oldPassword && formData.newPassword) {
         updateData.oldPassword = formData.oldPassword;
         updateData.newPassword = formData.newPassword;
       }
 
       const response = await updateUserProfile(updateData);
-      
+
       if (response.success) {
-        onUpdate(response.user);
-        toast.success(response.message || 'Profile updated successfully');
+        const mergedUser = mergeUserData(stagedUser, response.user);
+        onUpdate(mergedUser);
+        setSelectedProfileFile(null);
+        setSelectedCoverFile(null);
+        if (profileFileInputRef.current) profileFileInputRef.current.value = "";
+        if (coverFileInputRef.current) coverFileInputRef.current.value = "";
+        toast.success(response.message || "Profile updated successfully");
         onClose();
       }
     } catch (error) {
-      toast.error(error.message || 'Failed to update profile');
+      toast.error(error?.message || error?.error || "Failed to update profile");
     } finally {
       setIsLoading(false);
     }
@@ -123,9 +241,11 @@ const EditProfileModal = ({ user, onClose, onUpdate }) => {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className={`form-input ${errors.name ? 'input-error' : ''}`}
+              className={`form-input ${errors.name ? "input-error" : ""}`}
             />
-            {errors.name && <span className="error-message">{errors.name}</span>}
+            {errors.name && (
+              <span className="error-message">{errors.name}</span>
+            )}
           </div>
 
           <div className="form-group">
@@ -144,33 +264,73 @@ const EditProfileModal = ({ user, onClose, onUpdate }) => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="profileImage" className="form-label">
-              Profile Image URL
+            <label htmlFor="profileImageFile" className="form-label">
+              Profile Image
             </label>
             <input
-              type="text"
-              id="profileImage"
-              name="profileImage"
-              value={formData.profileImage}
-              onChange={handleChange}
+              ref={profileFileInputRef}
+              type="file"
+              id="profileImageFile"
+              accept="image/*"
+              onChange={handleProfileFileChange}
               className="form-input"
-              placeholder="https://example.com/profile.jpg"
+              disabled={isLoading}
             />
+            <div className="profile-upload-row">
+              <span className="profile-upload-meta">
+                {selectedProfileFile
+                  ? selectedProfileFile.name
+                  : "No file selected"}
+              </span>
+            </div>
+            {profilePreview && (
+              <div className="image-preview-box">
+                <img
+                  src={profilePreview}
+                  alt="Profile preview"
+                  className="upload-preview upload-preview-avatar"
+                />
+              </div>
+            )}
+            <small className="profile-upload-help">
+              JPG, PNG or WEBP up to 5MB. File uploads when you click Save
+              Changes.
+            </small>
           </div>
 
           <div className="form-group">
-            <label htmlFor="coverImage" className="form-label">
-              Cover Image URL
+            <label htmlFor="coverImageFile" className="form-label">
+              Cover Image
             </label>
             <input
-              type="text"
-              id="coverImage"
-              name="coverImage"
-              value={formData.coverImage}
-              onChange={handleChange}
+              ref={coverFileInputRef}
+              type="file"
+              id="coverImageFile"
+              accept="image/*"
+              onChange={handleCoverFileChange}
               className="form-input"
-              placeholder="https://example.com/cover.jpg"
+              disabled={isLoading}
             />
+            <div className="profile-upload-row">
+              <span className="profile-upload-meta">
+                {selectedCoverFile
+                  ? selectedCoverFile.name
+                  : "No file selected"}
+              </span>
+            </div>
+            {coverPreview && (
+              <div className="image-preview-box">
+                <img
+                  src={coverPreview}
+                  alt="Cover preview"
+                  className="upload-preview upload-preview-cover"
+                />
+              </div>
+            )}
+            <small className="profile-upload-help">
+              JPG, PNG or WEBP up to 5MB. File uploads when you click Save
+              Changes.
+            </small>
           </div>
 
           <div className="form-divider">
@@ -187,7 +347,7 @@ const EditProfileModal = ({ user, onClose, onUpdate }) => {
               name="oldPassword"
               value={formData.oldPassword}
               onChange={handleChange}
-              className={`form-input ${errors.oldPassword ? 'input-error' : ''}`}
+              className={`form-input ${errors.oldPassword ? "input-error" : ""}`}
               placeholder="••••••••"
             />
             {errors.oldPassword && (
@@ -205,7 +365,7 @@ const EditProfileModal = ({ user, onClose, onUpdate }) => {
               name="newPassword"
               value={formData.newPassword}
               onChange={handleChange}
-              className={`form-input ${errors.newPassword ? 'input-error' : ''}`}
+              className={`form-input ${errors.newPassword ? "input-error" : ""}`}
               placeholder="••••••••"
             />
             {errors.newPassword && (
@@ -227,7 +387,7 @@ const EditProfileModal = ({ user, onClose, onUpdate }) => {
               className="submit-button"
               disabled={isLoading}
             >
-              {isLoading ? 'Saving...' : 'Save Changes'}
+              {isLoading ? "Saving..." : "Save Changes"}
             </button>
           </div>
         </form>

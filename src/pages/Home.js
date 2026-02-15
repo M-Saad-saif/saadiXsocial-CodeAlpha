@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "../styles/Home.css";
+import logo from "../Images/saadIXsocailicon.png";
 
 const Home = () => {
   const features = [
@@ -48,9 +49,16 @@ const Home = () => {
 
       <div className="landing-hero">
         <div className="hero-content">
-          <h1 className="hero-title">
-            <span className="hero-gradient">saadIXsocials</span>
-          </h1>
+          <div>
+            <h1 className="hero-title">
+              <img
+                src={logo}
+                alt=""
+                style={{ width: "50px", position: "relative", top: "10px" }}
+              />
+              <span className="hero-gradient">saadIXsocials</span>
+            </h1>
+          </div>
           <p className="hero-subtitle">
             Connect with family and friends. Share your world, securely.
           </p>
@@ -84,23 +92,21 @@ const Home = () => {
           <div className="visual-card card-1">
             <div className="visual-header">
               <span className="visual-avatar"></span>
-              <span className="visual-name">Alex</span>
+              <span className="visual-name">Saad</span>
             </div>
             <div className="visual-image"></div>
             <div className="visual-actions">
               <span className="visual-like">❤️</span>
-              <span className="visual-comment">💬</span>
             </div>
           </div>
           <div className="visual-card card-2">
             <div className="visual-header">
               <span className="visual-avatar"></span>
-              <span className="visual-name">Sam</span>
+              <span className="visual-name">Rock</span>
             </div>
             <div className="visual-image"></div>
             <div className="visual-actions">
               <span className="visual-like">❤️</span>
-              <span className="visual-comment">💬</span>
             </div>
           </div>
         </div>
@@ -142,16 +148,16 @@ const Home = () => {
 
       {/* Simple footer */}
       <footer className="landing-footer">
-        <p>© {new Date().getFullYear()} saadIXsocials. Built with React.</p>
+        <p>© {new Date().getFullYear()} saadIXsocials. Built with MERN.</p>
         <div className="home-footer-links">
           <Link to="https://github.com/M-Saad-saif">
-            <i class="ri-github-fill"></i>GitHub
+            <i className="ri-github-fill"></i>GitHub
           </Link>
           <Link to="https://www.linkedin.com/in/muhammad-saad-saif-10b38a360/">
-            <i class="ri-linkedin-box-fill"></i>Linkdin
+            <i className="ri-linkedin-box-fill"></i>Linkdin
           </Link>
           <Link to="mailto:gcsaadsaif123@gmail.com">
-            <i class="ri-mail-fill"></i>Email
+            <i className="ri-mail-fill"></i>Email
           </Link>
         </div>
       </footer>

@@ -21,7 +21,6 @@ const AccountSettings = ({ user, onProfileUpdate }) => {
 
   const handleProfileUpdate = (updatedUser) => {
     onProfileUpdate(updatedUser);
-    setShowEditModal(false);
   };
 
   return (

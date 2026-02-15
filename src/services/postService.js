@@ -10,6 +10,24 @@ export const createPost = async (postData) => {
   }
 };
 
+// Upload post image
+export const uploadPostImage = async (file) => {
+  try {
+    const formData = new FormData();
+    formData.append("postImage", file);
+
+    const response = await api.post("/api/post/uploadpostimage", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: "Failed to upload post image" };
+  }
+};
+
 // Get a single post by ID
 export const getPost = async (postId) => {
   try {

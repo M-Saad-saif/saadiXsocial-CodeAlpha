@@ -3,6 +3,7 @@ const cors = require("cors");
 const ConnectDB = require("./config/db");
 const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, ".env") });
+require("./config/cloudinary");
 
 const app = express();
 ConnectDB();

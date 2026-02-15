@@ -72,33 +72,33 @@ const Sidebar = () => {
   // Check if user is being followed
 
   const isFollowing = (userId) => {
-    return user?.following?.includes(userId) || false;
+    return user.following?.includes(userId) || false;
   };
 
   return (
     <aside className="sidebar">
       {/* User Profile Card */}
       <div className="sidebar-card profile-card">
-        <Link to={`/profile/${user?._id}`} className="profile-link">
+        <Link to={`/profile/${user._id}`} className="profile-link">
           <img
             src={
-              user?.profileImage ||
+              user.profileImage ||
               "https://cdn-icons-png.flaticon.com/128/12225/12225935.png"
             }
-            alt={user?.name}
+            alt={user.name}
             className="sidebar-avatar"
           />
           <div className="profile-info">
-            <h3 className="profile-name">{user?.name}</h3>
-            <p className="profile-email">{user?.email}</p>
+            <h3 className="profile-name">{user.name}</h3>
+            <p className="profile-email">{user.email}</p>
           </div>
         </Link>
-        <div className="profile-stats">
-          <div className="stat-item">
-            <span className="stat-value">{user?.followers?.length || 0}</span>
-            <span className="stat-label">Followers</span>
-          </div>
-          <div className="stat-item">
+          <div className="profile-stats">
+            <div className="stat-item">
+              <span className="stat-value">{user?.followers?.length || 0}</span>
+              <span className="stat-label">Followers</span>
+            </div>
+            <div className="stat-item">
             <span className="stat-value">{user?.following?.length || 0}</span>
             <span className="stat-label">Following</span>
           </div>

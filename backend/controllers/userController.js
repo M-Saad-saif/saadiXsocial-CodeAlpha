@@ -206,19 +206,19 @@ const searchUsers = async (req, res) => {
     if (!q || q.trim().length < 2) {
       return res.status(400).json({
         success: false,
-        message: 'Search query must be at least 2 characters',
+        message: "Search query must be at least 2 characters",
       });
     }
 
-    // Search users by name or email 
+    // Search users by name or email
     const users = await UserModel.find({
       $or: [
-        { name: { $regex: q, $options: 'i' } },
-        { email: { $regex: q, $options: 'i' } },
+        { name: { $regex: q, $options: "i" } },
+        { email: { $regex: q, $options: "i" } },
       ],
     })
-      .select('-password')
-      .limit(10); 
+      .select("-password")
+      .limit(10);
 
     res.json(users);
   } catch (error) {
@@ -235,8 +235,9 @@ const searchUsers = async (req, res) => {
 const getSuggestedUsers = async (req, res) => {
   try {
     const currentUserId = req.user.id;
-    
-    const currentUser = await UserModel.findById(currentUserId).select('following');
+
+    const currentUser =
+      await UserModel.findById(currentUserId).select("following");
     const followingList = currentUser?.following || [];
 
     // Use MongoDB aggregation pipeline for efficient random selection
@@ -245,7 +246,10 @@ const getSuggestedUsers = async (req, res) => {
         $match: {
           // Exclude current user and users already being followed
           _id: {
-            $nin: [new mongoose.Types.ObjectId(currentUserId), ...followingList],
+            $nin: [
+              new mongoose.Types.ObjectId(currentUserId),
+              ...followingList,
+            ],
           },
         },
       },
@@ -281,14 +285,20 @@ const getFollowers = async (req, res) => {
     const targetUserId = req.params.id;
 
     const user = await UserModel.findById(targetUserId)
-      .select('followers')
-      .populate('followers', 'name profileImage email');
+      .select("followers")
+      .populate("followers", "name profileImage email");
 
     if (!user) {
-      return res.status(404).json({ success: false, message: 'User not found' });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
 
-    res.json({ success: true, count: user.followers.length, data: user.followers });
+    res.json({
+      success: true,
+      count: user.followers.length,
+      data: user.followers,
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -302,16 +312,115 @@ const getFollowing = async (req, res) => {
     const targetUserId = req.params.id;
 
     const user = await UserModel.findById(targetUserId)
-      .select('following')
-      .populate('following', 'name profileImage email');
+      .select("following")
+      .populate("following", "name profileImage email");
 
     if (!user) {
-      return res.status(404).json({ success: false, message: 'User not found' });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
 
-    res.json({ success: true, count: user.following.length, data: user.following });
+    res.json({
+      success: true,
+      count: user.following.length,
+      data: user.following,
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// desc    set user profile
+// route   POST /api/user/uploadprofilepic
+// access  Private
+const setProfilePic = async (req, res) => {
+  try {
+    if (!req.file || !req.file.path) {
+      return res
+        .status(400)
+        .json({ success: false, error: "Failed to upload profile picture" });
+    }
+
+    const userId = req.user.id;
+    const profilePicPath = req.file.path;
+    const user = await UserModel.findByIdAndUpdate(
+      userId,
+      { profileImage: profilePicPath },
+      { new: true },
+    );
+
+    console.log({ message: "find the user " });
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found try again" });
+    }
+    console.log({ message: "find the user " });
+
+    res.json({
+      success: true,
+      message: "Profile pic updated",
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        profileImage: user.profileImage,
+        monthlyBudget: user.monthlyBudget,
+      },
+    });
+  } catch (error) {
+    console.error("Upload error:", error);
+    res.status(500).json({
+      success: false,
+      error: "Cannot upload profile picture due to internal issues",
+      message: error.message,
+    });
+  }
+};
+
+// desc    set user cover
+// route   POST /api/user/uploadcoverpic
+// access  Private
+const setCoverPic = async (req, res) => {
+  try {
+    if (!req.file || !req.file.path) {
+      return res
+        .status(400)
+        .json({ success: false, error: "Failed to upload cover image" });
+    }
+
+    const userId = req.user.id;
+    const coverImagePath = req.file.path;
+    const user = await UserModel.findByIdAndUpdate(
+      userId,
+      { coverImage: coverImagePath },
+      { new: true },
+    );
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found try again" });
+    }
+
+    res.json({
+      success: true,
+      message: "Cover image updated",
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        coverImage: user.coverImage,
+      },
+    });
+  } catch (error) {
+    console.error("Upload error:", error);
+    res.status(500).json({
+      success: false,
+      error: "Cannot upload cover image due to internal issues",
+      message: error.message,
+    });
   }
 };
 
@@ -326,4 +435,6 @@ module.exports = {
   getSuggestedUsers,
   getFollowers,
   getFollowing,
+  setProfilePic,
+  setCoverPic
 };

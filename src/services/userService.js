@@ -30,6 +30,42 @@ export const updateUserProfile = async (profileData) => {
   }
 };
 
+// Upload profile picture
+export const uploadProfilePicture = async (file) => {
+  try {
+    const formData = new FormData();
+    formData.append('profilePic', file);
+
+    const response = await api.post('/api/user/uploadprofilepic', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: 'Failed to upload profile picture' };
+  }
+};
+
+// Upload cover image
+export const uploadCoverPicture = async (file) => {
+  try {
+    const formData = new FormData();
+    formData.append('coverPic', file);
+
+    const response = await api.post('/api/user/uploadcoverpic', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: 'Failed to upload cover image' };
+  }
+};
+
 // Delete user account
 export const deleteUserAccount = async () => {
   try {

@@ -24,6 +24,31 @@ const createPost = async (req, res) => {
   }
 };
 
+// desc    upload post image
+// route   POST /api/post/uploadpostimage
+// access  Private
+const uploadPostImage = async (req, res) => {
+  try {
+    if (!req.file || !req.file.path) {
+      return res
+        .status(400)
+        .json({ success: false, error: "Failed to upload post image" });
+    }
+
+    res.json({
+      success: true,
+      message: "Post image uploaded successfully",
+      imageUrl: req.file.path,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: "Cannot upload post image due to internal issues",
+      message: error.message,
+    });
+  }
+};
+
 // desc    get post
 // route   GET /api/post/getpost/:id
 // access  Private
@@ -135,4 +160,5 @@ module.exports = {
   likePost,
   getFeed,
   getUserPosts,
+  uploadPostImage,
 };

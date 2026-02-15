@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createPost } from "../services/postService";
+import { createPost, uploadPostImage } from "../services/postService";
 import { useFeed } from "../context/FeedContext";
 import { toast } from "react-toastify";
 import "../styles/CreatePost.css";
@@ -11,9 +11,9 @@ const CreatePost = () => {
 
   const [formData, setFormData] = useState({
     description: "",
-    postImage: "",
   });
 
+  const [selectedImageFile, setSelectedImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -35,14 +35,34 @@ const CreatePost = () => {
     }
   };
 
-  // Handle image URL input
+  // Handle image file input
   const handleImageChange = (e) => {
-    const url = e.target.value;
-    setFormData((prev) => ({
-      ...prev,
-      postImage: url,
-    }));
-    setImagePreview(url);
+    const file = e.target.files?.[0];
+
+    if (!file) {
+      setSelectedImageFile(null);
+      return;
+    }
+
+    if (!file.type?.startsWith("image/")) {
+      setErrors((prev) => ({
+        ...prev,
+        postImage: "Please select a valid image file",
+      }));
+      e.target.value = "";
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setErrors((prev) => ({
+        ...prev,
+        postImage: "Image size must be 5MB or less",
+      }));
+      e.target.value = "";
+      return;
+    }
+
+    setSelectedImageFile(file);
 
     if (errors.postImage) {
       setErrors((prev) => ({
@@ -52,19 +72,24 @@ const CreatePost = () => {
     }
   };
 
+  useEffect(() => {
+    if (!selectedImageFile) {
+      setImagePreview("");
+      return;
+    }
+
+    const previewUrl = URL.createObjectURL(selectedImageFile);
+    setImagePreview(previewUrl);
+
+    return () => URL.revokeObjectURL(previewUrl);
+  }, [selectedImageFile]);
+
   // Validate form
   const validate = () => {
     const newErrors = {};
 
-    if (!formData.postImage.trim()) {
-      newErrors.postImage = "Image URL is required";
-    } else {
-      // Basic URL validation
-      try {
-        new URL(formData.postImage);
-      } catch {
-        newErrors.postImage = "Please enter a valid image URL";
-      }
+    if (!selectedImageFile) {
+      newErrors.postImage = "Image file is required";
     }
 
     setErrors(newErrors);
@@ -80,7 +105,17 @@ const CreatePost = () => {
     setIsLoading(true);
 
     try {
-      const response = await createPost(formData);
+      const uploadResponse = await uploadPostImage(selectedImageFile);
+      if (!uploadResponse?.success || !uploadResponse?.imageUrl) {
+        throw new Error(uploadResponse?.message || "Failed to upload post image");
+      }
+
+      const postPayload = {
+        description: formData.description,
+        postImage: uploadResponse.imageUrl,
+      };
+
+      const response = await createPost(postPayload);
 
       if (response.success) {
         // Add post to feed
@@ -112,25 +147,25 @@ const CreatePost = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="create-post-form">
-          {/* Image URL Input */}
+          {/* Image Input */}
           <div className="form-group">
             <label htmlFor="postImage" className="form-label">
-              Image URL
+              Image
             </label>
             <input
-              type="text"
+              type="file"
               id="postImage"
               name="postImage"
-              value={formData.postImage}
               onChange={handleImageChange}
               className={`form-input ${errors.postImage ? "input-error" : ""}`}
-              placeholder="https://example.com/image.jpg"
+              accept="image/*"
+              disabled={isLoading}
             />
             {errors.postImage && (
               <span className="error-message">{errors.postImage}</span>
             )}
             <p className="input-hint">
-              Paste a direct link to your image (jpg, png, gif, etc.)
+              Select a JPG, PNG or WEBP image up to 5MB
             </p>
           </div>
 
@@ -140,13 +175,6 @@ const CreatePost = () => {
               <img
                 src={imagePreview}
                 alt="Preview"
-                onError={() => {
-                  setImagePreview("");
-                  setErrors((prev) => ({
-                    ...prev,
-                    postImage: "Failed to load image. Please check the URL.",
-                  }));
-                }}
               />
             </div>
           )}
