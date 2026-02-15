@@ -13,6 +13,7 @@ import AccountSettings from "../components/AccountSettings";
 import PostCard from "../components/PostCard";
 import FollowersModal from "../components/FollowersModal";
 import "../styles/Profile.css";
+import { DNA } from "react-loader-spinner";
 
 const Profile = () => {
   const { userId } = useParams();
@@ -128,7 +129,15 @@ const Profile = () => {
   if (loading) {
     return (
       <div className="profile-loading">
-        <div className="loading-spinner"></div>
+        <DNA
+          visible={true}
+          height="80"
+          width="80"
+          ariaLabel="dna-loading"
+          wrapperStyle={{}}
+          wrapperClass="dna-wrapper"
+        />
+        <p>Loading Profile .... Please wait</p>
       </div>
     );
   }
@@ -196,7 +205,10 @@ const Profile = () => {
           </div>
 
           {profileUser.boidata && (
-            <p className="profile-bio"><span style={{color:"white", fontWeight:"bold"}}>Bio: </span>  {profileUser.boidata}</p>
+            <p className="profile-bio">
+              <span style={{ color: "white", fontWeight: "bold" }}>Bio: </span>{" "}
+              {profileUser.boidata}
+            </p>
           )}
 
           <div className="profile-stats">
@@ -235,8 +247,19 @@ const Profile = () => {
         <h2 className="section-title">Posts</h2>
 
         {postsLoading ? (
-          <div className="posts-loading">
-            <div className="loading-spinner"></div>
+          <div
+            className="posts-loading"
+            style={{ display: "flex", flexDirection: "column" }}
+          >
+            <DNA
+              visible={true}
+              height="80"
+              width="80"
+              ariaLabel="dna-loading"
+              wrapperStyle={{}}
+              wrapperClass="dna-wrapper"
+            />
+            <p>Loading Posts</p>
           </div>
         ) : userPosts.length > 0 ? (
           <div className="posts-grid">

@@ -4,11 +4,8 @@ import { getFollowers, getFollowing } from "../services/userService";
 import { FiX } from "react-icons/fi";
 import "../styles/Modal.css";
 import "../styles/FollowersModal.css";
+import { DNA } from "react-loader-spinner";
 
-/**
- * FollowersModal
- * Reusable modal to show followers or following list for a profile
- */
 const FollowersModal = ({ open, onClose, userId, type = "followers" }) => {
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
@@ -27,11 +24,9 @@ const FollowersModal = ({ open, onClose, userId, type = "followers" }) => {
             ? await getFollowing(userId)
             : await getFollowers(userId);
 
-        // Support different response shapes: either the service returns
-        // the backend wrapper ({ success, count, data }) or directly the array.
         const itemsList = Array.isArray(resp)
           ? resp
-          : resp?.data ?? resp ?? [];
+          : (resp?.data ?? resp ?? []);
 
         setItems(itemsList || []);
       } catch (err) {
@@ -68,7 +63,14 @@ const FollowersModal = ({ open, onClose, userId, type = "followers" }) => {
         <div className="modal-form">
           {loading ? (
             <div style={{ textAlign: "center" }}>
-              <div className="loading-spinner-small" style={{ margin: 16 }} />
+              <DNA
+                visible={true}
+                height="50"
+                width="50"
+                ariaLabel="dna-loading"
+                wrapperStyle={{}}
+                wrapperClass="dna-wrapper"
+              />
             </div>
           ) : error ? (
             <div className="error-message">{error}</div>

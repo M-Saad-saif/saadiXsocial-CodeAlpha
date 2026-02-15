@@ -4,6 +4,7 @@ import { createPost, uploadPostImage } from "../services/postService";
 import { useFeed } from "../context/FeedContext";
 import { toast } from "react-toastify";
 import "../styles/CreatePost.css";
+import { DNA } from "react-loader-spinner";
 
 const CreatePost = () => {
   const navigate = useNavigate();
@@ -107,7 +108,9 @@ const CreatePost = () => {
     try {
       const uploadResponse = await uploadPostImage(selectedImageFile);
       if (!uploadResponse?.success || !uploadResponse?.imageUrl) {
-        throw new Error(uploadResponse?.message || "Failed to upload post image");
+        throw new Error(
+          uploadResponse?.message || "Failed to upload post image",
+        );
       }
 
       const postPayload = {
@@ -172,10 +175,7 @@ const CreatePost = () => {
           {/* Image Preview */}
           {imagePreview && (
             <div className="image-preview">
-              <img
-                src={imagePreview}
-                alt="Preview"
-              />
+              <img src={imagePreview} alt="Preview" />
             </div>
           )}
 
@@ -198,6 +198,18 @@ const CreatePost = () => {
               {formData.description.length}/500
             </div>
           </div>
+{isLoading &&  <div style={{textAlign:"center"}}>
+            <DNA
+              visible={true}
+              height="80"
+              width="80"
+              ariaLabel="dna-loading"
+              wrapperStyle={{}}
+              wrapperClass="dna-wrapper"
+            />
+            <p>Uploading .... Please Wait</p>
+          </div> }
+        
 
           {/* Action Buttons */}
           <div className="form-actions">

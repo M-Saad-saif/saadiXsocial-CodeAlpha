@@ -7,6 +7,7 @@ import {
 import { toast } from "react-toastify";
 import { FiX } from "react-icons/fi";
 import "../styles/Modal.css";
+import { DNA } from "react-loader-spinner";
 
 const EditProfileModal = ({ user, onClose, onUpdate }) => {
   const profileFileInputRef = useRef(null);
@@ -24,7 +25,9 @@ const EditProfileModal = ({ user, onClose, onUpdate }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedProfileFile, setSelectedProfileFile] = useState(null);
   const [selectedCoverFile, setSelectedCoverFile] = useState(null);
-  const [profilePreview, setProfilePreview] = useState(user?.profileImage || "");
+  const [profilePreview, setProfilePreview] = useState(
+    user?.profileImage || "",
+  );
   const [coverPreview, setCoverPreview] = useState(user?.coverImage || "");
 
   const mergeUserData = (baseUser, partialUser) => ({
@@ -372,6 +375,24 @@ const EditProfileModal = ({ user, onClose, onUpdate }) => {
               <span className="error-message">{errors.newPassword}</span>
             )}
           </div>
+
+          {isLoading && (
+            <div
+              style={{
+                textAlign: "center",
+              }}
+            >
+              <DNA
+                visible={true}
+                height="50"
+                width="50"
+                ariaLabel="dna-loading"
+                wrapperStyle={{}}
+                wrapperClass="dna-wrapper"
+              />
+              <p>Saving profile</p>
+            </div>
+          )}
 
           <div className="modal-actions">
             <button

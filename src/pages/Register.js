@@ -1,21 +1,18 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import '../styles/Auth.css';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { DNA } from "react-loader-spinner";
+import "../styles/Auth.css";
 
-/**
- * Register Page Component
- * Handles new user registration
- */
 const Register = () => {
   const navigate = useNavigate();
   const { register } = useAuth();
 
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -28,12 +25,12 @@ const Register = () => {
       ...prev,
       [name]: value,
     }));
-    
+
     // Clear error for this field
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
-        [name]: '',
+        [name]: "",
       }));
     }
   };
@@ -43,27 +40,27 @@ const Register = () => {
     const newErrors = {};
 
     if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
+      newErrors.name = "Name is required";
     } else if (formData.name.trim().length < 2) {
-      newErrors.name = 'Name must be at least 2 characters';
+      newErrors.name = "Name must be at least 2 characters";
     }
 
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
+      newErrors.email = "Email is invalid";
     }
 
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = "Password is required";
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+      newErrors.password = "Password must be at least 6 characters";
     }
 
     if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm your password';
+      newErrors.confirmPassword = "Please confirm your password";
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = "Passwords do not match";
     }
 
     setErrors(newErrors);
@@ -82,14 +79,14 @@ const Register = () => {
     setIsLoading(false);
 
     if (result.success) {
-      navigate('/feedinterface');
+      navigate("/feedinterface");
     }
   };
 
   return (
     <div className="auth-container">
       <div className="auth-background"></div>
-      
+
       <div className="auth-card">
         <div className="auth-header">
           <h1 className="auth-title">Create Account</h1>
@@ -107,11 +104,13 @@ const Register = () => {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className={`form-input ${errors.name ? 'input-error' : ''}`}
+              className={`form-input ${errors.name ? "input-error" : ""}`}
               placeholder="Name"
               autoComplete="name"
             />
-            {errors.name && <span className="error-message">{errors.name}</span>}
+            {errors.name && (
+              <span className="error-message">{errors.name}</span>
+            )}
           </div>
 
           <div className="form-group">
@@ -124,11 +123,13 @@ const Register = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className={`form-input ${errors.email ? 'input-error' : ''}`}
+              className={`form-input ${errors.email ? "input-error" : ""}`}
               placeholder="you@example.com"
               autoComplete="email"
             />
-            {errors.email && <span className="error-message">{errors.email}</span>}
+            {errors.email && (
+              <span className="error-message">{errors.email}</span>
+            )}
           </div>
 
           <div className="form-group">
@@ -141,11 +142,13 @@ const Register = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className={`form-input ${errors.password ? 'input-error' : ''}`}
+              className={`form-input ${errors.password ? "input-error" : ""}`}
               placeholder="••••••••"
               autoComplete="new-password"
             />
-            {errors.password && <span className="error-message">{errors.password}</span>}
+            {errors.password && (
+              <span className="error-message">{errors.password}</span>
+            )}
           </div>
 
           <div className="form-group">
@@ -158,7 +161,7 @@ const Register = () => {
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
-              className={`form-input ${errors.confirmPassword ? 'input-error' : ''}`}
+              className={`form-input ${errors.confirmPassword ? "input-error" : ""}`}
               placeholder="••••••••"
               autoComplete="new-password"
             />
@@ -167,25 +170,39 @@ const Register = () => {
             )}
           </div>
 
-          <button
-            type="submit"
-            className="auth-button"
-            disabled={isLoading}
-          >
+          {isLoading && (
+            <div
+              style={{
+                textAlign: "center",
+              }}
+            >
+              <DNA
+                visible={true}
+                height="80"
+                width="80"
+                ariaLabel="dna-loading"
+                wrapperStyle={{}}
+                wrapperClass="dna-wrapper"
+              />
+              <p>Creating Account .... Please Wait</p>
+            </div>
+          )}
+
+          <button type="submit" className="auth-button" disabled={isLoading}>
             {isLoading ? (
               <span className="button-loading">
                 <span className="spinner"></span>
                 Creating account...
               </span>
             ) : (
-              'Create Account'
+              "Create Account"
             )}
           </button>
         </form>
 
         <div className="auth-footer">
           <p className="auth-link-text">
-            Already have an account?{' '}
+            Already have an account?{" "}
             <Link to="/login" className="auth-link">
               Sign in
             </Link>

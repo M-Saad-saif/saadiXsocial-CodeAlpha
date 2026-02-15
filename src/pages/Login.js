@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { DNA } from "react-loader-spinner";
 import "../styles/Auth.css";
 
 const Login = () => {
@@ -114,15 +115,29 @@ const Login = () => {
               <span className="error-message">{errors.password}</span>
             )}
           </div>
-
+          <div>
+            {isLoading && (
+              <div style={{ textAlign: "center" }}>
+                <DNA
+                  visible={true}
+                  height="70"
+                  width="70"
+                  ariaLabel="dna-loading"
+                  wrapperStyle={{}}
+                  wrapperClass="dna-wrapper"
+                />
+                <p>Wait for a moment</p>
+              </div>
+            )}
+          </div>
           <button type="submit" className="auth-button" disabled={isLoading}>
             {isLoading ? (
               <span className="button-loading">
                 <span className="spinner"></span>
-                Signing in...
+                Logging in...
               </span>
             ) : (
-              "Sign In"
+              "LogIn"
             )}
           </button>
         </form>

@@ -59,7 +59,14 @@ function App() {
         <FeedProvider>
           <div className="app">
             <Routes>
-              <Route path="/" element={<HomeInterface />} />
+              <Route
+                path="/"
+                element={
+                  <PublicRoute>
+                    <HomeInterface />
+                  </PublicRoute>
+                }
+              />
 
               <Route
                 path="/login"
