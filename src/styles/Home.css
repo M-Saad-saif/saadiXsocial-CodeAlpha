@@ -339,6 +339,7 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: var(--spacing-xl);
+  text-align: center;
 }
 
 .feature-card {
@@ -471,8 +472,9 @@ body {
   }
 
   .hero-visual {
-    width: 100%;
+    width: 125%;
     height: 400px;
+    margin-bottom: 1rem;
   }
 }
 
@@ -496,12 +498,21 @@ body {
   .cta-title {
     font-size: 2rem;
   }
+
+  .visual-image {
+    height: 100px;
+  }
+
+  .visual-card {
+    padding: 0.5rem;
+  }
 }
 
 @media (max-width: 480px) {
   .hero-stats {
-    flex-direction: column;
+    /* flex-direction: column; */
     gap: var(--spacing-md);
+    margin-top: -39px;
   }
 
   .visual-card {

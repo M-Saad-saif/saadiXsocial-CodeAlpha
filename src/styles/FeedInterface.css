@@ -62,6 +62,100 @@
   gap: var(--spacing-xl);
 }
 
+.inline-suggestion-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  text-align: center;
+}
+
+.inline-suggestion-label {
+  margin: 0 0 var(--spacing-md);
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.inline-suggestion-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: var(--spacing-md);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  scroll-snap-type: x proximity;
+  padding-bottom: 6px;
+}
+
+.inline-suggestion-content {
+  display: flex;
+  flex: 0 0 220px;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  scroll-snap-align: start;
+}
+
+.inline-suggestion-content:not(:first-child) {
+  border-top: 1px solid var(--color-border);
+}
+
+.inline-suggestion-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+.inline-suggestion-info {
+  flex: 1;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.inline-suggestion-info h4 {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--color-text-primary);
+}
+
+.inline-suggestion-info p {
+  margin: 2px 0 0;
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+
+.inline-suggestion-follow {
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  font-weight: 600;
+  transition: all var(--transition-base);
+  margin-top: var(--spacing-xs);
+}
+
+.inline-suggestion-follow:hover {
+  background: var(--color-bg-hover);
+}
+
+.inline-suggestion-follow.following {
+  color: var(--color-text-secondary);
+}
+
 /* Empty State */
 .empty-feed {
   text-align: center;
@@ -119,5 +213,15 @@
   .refresh-button {
     align-self: stretch;
     justify-content: center;
+  }
+
+  .inline-suggestion-content {
+    flex: 0 0 190px;
+    align-items: center;
+    text-align: center;
+  }
+
+  .inline-suggestion-follow {
+    margin-left: 0;
   }
 }

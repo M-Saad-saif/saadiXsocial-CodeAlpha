@@ -30,13 +30,19 @@ export const FeedProvider = ({ children }) => {
         if (refresh) {
           setPosts(response);
         } else {
-          setPosts((prevPosts) => [...prevPosts, ...response]);
+          // Feed endpoint currently returns a full list (not paginated),
+          // so merge by id to avoid duplicates when the observer triggers again.
+          setPosts((prevPosts) => {
+            const existingIds = new Set(prevPosts.map((post) => post._id));
+            const uniqueIncoming = response.filter(
+              (post) => !existingIds.has(post._id),
+            );
+            return [...prevPosts, ...uniqueIncoming];
+          });
         }
 
-        // If no posts returned, we've reached the end
-        if (response.length === 0) {
-          setHasMore(false);
-        }
+        // No pagination cursor/page is provided by API, so we stop after one load.
+        setHasMore(false);
       }
     } catch (error) {
       toast.error(error.message || "Failed to load feed");
