@@ -15,7 +15,7 @@ const Home = () => {
       icon: "❤️",
       title: "Engage & Interact",
       description:
-        "Like posts, follow friends, and build your community with real-time updates.",
+        "Like posts, follow friends, and build and save your community with real-time updates.",
     },
     {
       icon: "👤",

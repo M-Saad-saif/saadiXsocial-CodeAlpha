@@ -346,7 +346,7 @@ body {
   background: var(--color-bg-card);
   border: 1px solid var(--color-border);
   border-radius: 1rem;
-  padding: var(--spacing-xl);
+  padding: 10px 8px;
   backdrop-filter: blur(10px);
   transition: transform var(--transition-base), border-color var(--transition-base);
 }
@@ -488,8 +488,14 @@ body {
   }
 
   .features-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    margin: -44px -20px;
+    gap: 0;
+    row-gap: 4px;
+    column-gap: 4px;
+
   }
+
 
   .cta-card {
     padding: var(--spacing-xl);
@@ -505,6 +511,11 @@ body {
 
   .visual-card {
     padding: 0.5rem;
+  }
+
+  .feature-title {
+    font-size: 19px;
+
   }
 }
 
